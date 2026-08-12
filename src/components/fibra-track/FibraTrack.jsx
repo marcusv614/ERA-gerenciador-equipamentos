@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import {
   MapPin, Plus, Search, ChevronLeft, ChevronRight,
   LayoutDashboard, Boxes, Building2, Users, Warehouse,
-  ArrowLeftRight, Calendar,
+  ArrowLeftRight, Calendar, Moon, Sun,
 } from 'lucide-react';
 import { StatCard } from '../stat-card/StatCard';
 import { StatusBadge } from '../status-badge/StatusBadge';
@@ -14,6 +14,7 @@ import { TecnicoCard } from '../tecnico-card/TecnicoCard';
 import { DepositoCard } from '../deposito-card/DepositoCard';
 import { formatDate } from '../../utils/formatDate';
 import { initialObras, initialEquip, tipos, statusList, tipoIcon } from '../../data/mockData';
+import eraLogo from '../../assets/ERALTDA.png';
 import styles from './FibraTrack.module.css';
 
 const tipoTileClass = {
@@ -30,6 +31,7 @@ export function FibraTrack() {
   const [filtroTipo, setFiltroTipo] = useState('Todos');
   const [filtroStatus, setFiltroStatus] = useState('Todos');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
   const [showNovaObra, setShowNovaObra] = useState(false);
   const [showNovoEquip, setShowNovoEquip] = useState(false);
@@ -97,13 +99,16 @@ export function FibraTrack() {
   }
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-theme={darkMode ? 'dark' : 'light'}>
       {/* Sidebar */}
       <aside
         className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed}`}
       >
         {sidebarOpen && (
           <div className={styles.sidebarInner}>
+            <div className={styles.brandRow}>
+              <img className={styles.brandLogo} src={eraLogo} alt="ERA Engenharia de Redes da Amazônia" />
+            </div>
 
             <nav className={styles.nav}>
               <div className={`${styles.navItem} ${styles.navItemDashboard}`}>
@@ -194,6 +199,20 @@ export function FibraTrack() {
           </div>
 
           <div className={styles.topbarRight}>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={darkMode}
+              aria-label="Alternar modo escuro"
+              onClick={() => setDarkMode((value) => !value)}
+              className={`${styles.themeSwitch} ${darkMode ? styles.themeSwitchActive : ''}`}
+            >
+              <Sun size={14} className={styles.themeIconLight} />
+              <span className={styles.themeTrack}>
+                <span className={styles.themeThumb} />
+              </span>
+              <Moon size={14} className={styles.themeIconDark} />
+            </button>
             <div className={styles.searchBox}>
               <Search size={14} className={styles.searchIcon} />
               <input
