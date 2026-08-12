@@ -11,13 +11,13 @@
   --bg: #f7f4ec;
   --surface: #fffaf0;
   --surface-2: #f2ebdc;
-  --border: rgba(47, 47, 47, 0.12);
-  --border-strong: rgba(47, 47, 47, 0.22);
+  --border: rgba(47, 47, 47, 0.22);
+  --border-strong: rgba(47, 47, 47, 0.38);
   --text: var(--era-graphite);
   --text-muted: #756c5d;
-  --accent: var(--era-orange);
-  --accent-dim: rgba(var(--era-orange-rgb), 0.14);
-  --warn: var(--era-yellow);
+  --accent: #B86900;
+  --accent-dim: rgba(var(--era-orange-rgb), 0.18);
+  --warn: #7C5B00;
   --info: var(--era-bolt);
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;

@@ -31,4 +31,5 @@
 }
 .warn {
   color: var(--warn);
+  font-weight: 700;
 }

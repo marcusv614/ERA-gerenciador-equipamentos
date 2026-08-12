@@ -100,6 +100,15 @@ export function FibraTrack() {
 
   return (
     <div className={styles.root} data-theme={darkMode ? 'dark' : 'light'}>
+      {sidebarOpen && (
+        <button
+          type="button"
+          className={styles.sidebarScrim}
+          aria-label="Fechar menu lateral"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
         className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed}`}
