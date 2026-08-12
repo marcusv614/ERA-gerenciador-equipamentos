@@ -1,16 +1,17 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import {
   Activity, MapPin, Plus, Search, ChevronLeft, ChevronRight,
   LayoutDashboard, Boxes, Building2, Users, Warehouse,
   ArrowLeftRight, Calendar,
 } from 'lucide-react';
-import { TraceMark } from '../trace-mark/TraceMark';
 import { StatCard } from '../stat-card/StatCard';
 import { StatusBadge } from '../status-badge/StatusBadge';
 import { ObraStatusBadge } from '../obra-status-badge/ObraStatusBadge';
 import { NovaObraModal } from '../nova-obra-modal/NovaObraModal';
 import { NovoEquipModal } from '../novo-equip-modal/NovoEquipModal';
 import { MoverEquipModal } from '../mover-equip-modal/MoverEquipModal';
+import { TecnicoCard } from '../tecnico-card/TecnicoCard';
+import { DepositoCard } from '../deposito-card/DepositoCard';
 import { formatDate } from '../../utils/formatDate';
 import { initialObras, initialEquip, tipos, statusList, tipoIcon } from '../../data/mockData';
 import styles from './FibraTrack.module.css';
@@ -24,7 +25,7 @@ const tipoTileClass = {
 export function FibraTrack() {
   const [obras, setObras] = useState(initialObras);
   const [equipamentos, setEquipamentos] = useState(initialEquip);
-  const [view, setView] = useState('equipamentos'); // equipamentos | obras
+  const [view, setView] = useState('equipamentos'); // equipamentos | obras | tecnicos | deposito
   const [search, setSearch] = useState('');
   const [filtroTipo, setFiltroTipo] = useState('Todos');
   const [filtroStatus, setFiltroStatus] = useState('Todos');
@@ -58,6 +59,28 @@ export function FibraTrack() {
     });
   }, [equipamentos, filtroTipo, filtroStatus, search]);
 
+  const tecnicos = useMemo(() => {
+    const nomes = new Set();
+    obras.forEach((o) => o.responsavel && nomes.add(o.responsavel));
+    equipamentos.forEach((e) => e.tecnico && nomes.add(e.tecnico));
+    const q = search.trim().toLowerCase();
+    return [...nomes]
+      .filter((nome) => !q || nome.toLowerCase().includes(q))
+      .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  }, [obras, equipamentos, search]);
+
+  const depositoItems = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return equipamentos.filter((e) => {
+      if (e.status === 'Em campo') return false;
+      if (!q) return true;
+      return (
+        e.modelo.toLowerCase().includes(q) ||
+        e.serie.toLowerCase().includes(q)
+      );
+    });
+  }, [equipamentos, search]);
+
   function handleAddObra(nova) {
     setObras((prev) => [{ id: 'o' + (prev.length + 1) + '_' + Date.now(), ...nova }, ...prev]);
     setShowNovaObra(false);
@@ -85,10 +108,6 @@ export function FibraTrack() {
               <div className={styles.brandIcon}>
                 <Activity size={16} />
               </div>
-              <span className={styles.brandName}>FibraTrack</span>
-            </div>
-            <div className={styles.brandTrace}>
-              <TraceMark />
             </div>
 
             <nav className={styles.nav}>
@@ -124,12 +143,18 @@ export function FibraTrack() {
               >
                 <Building2 size={16} /> Obras
               </button>
-              <div className={styles.navItem}>
+              <button
+                onClick={() => setView('tecnicos')}
+                className={`${styles.navItem} ${view === 'tecnicos' ? styles.navItemActive : ''}`}
+              >
                 <Users size={16} /> Técnicos
-              </div>
-              <div className={styles.navItem}>
+              </button>
+              <button
+                onClick={() => setView('deposito')}
+                className={`${styles.navItem} ${view === 'deposito' ? styles.navItemActive : ''}`}
+              >
                 <Warehouse size={16} /> Depósito
-              </div>
+              </button>
             </nav>
 
             <div className={styles.profileWrap}>
@@ -157,12 +182,19 @@ export function FibraTrack() {
           </button>
           <div>
             <h1 className={styles.title}>
-              {view === 'equipamentos' ? 'Equipamentos' : 'Obras'}
+              {view === 'equipamentos' ? 'Equipamentos'
+                : view === 'obras' ? 'Obras'
+                : view === 'tecnicos' ? 'Técnicos'
+                : 'Depósito'}
             </h1>
             <p className={styles.subtitle}>
               {view === 'equipamentos'
                 ? 'Onde cada instrumento está e com quem'
-                : 'Frentes de trabalho ativas e planejadas'}
+                : view === 'obras'
+                  ? 'Frentes de trabalho ativas e planejadas'
+                  : view === 'tecnicos'
+                    ? 'Equipes, obras sob responsabilidade e retiradas de materiais'
+                    : 'Itens fora de campo — estoque, manutenção e trânsito'}
             </p>
           </div>
 
@@ -172,7 +204,11 @@ export function FibraTrack() {
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar modelo, série, técnico..."
+                placeholder={
+                  view === 'tecnicos' ? 'Buscar técnico...'
+                    : view === 'deposito' ? 'Buscar item, série...'
+                    : 'Buscar modelo, série, técnico...'
+                }
                 className={styles.searchInput}
               />
             </div>
@@ -271,7 +307,7 @@ export function FibraTrack() {
                 )}
               </div>
             </>
-          ) : (
+          ) : view === 'obras' ? (
             <div className={styles.obraList}>
               {obras.map((o) => {
                 const equipDaObra = equipamentos.filter((e) => e.obraId === o.id);
@@ -315,6 +351,23 @@ export function FibraTrack() {
                 );
               })}
             </div>
+          ) : view === 'tecnicos' ? (
+            <div className={styles.tecnicoGrid}>
+              {tecnicos.map((nome) => (
+                <TecnicoCard
+                  key={nome}
+                  nome={nome}
+                  obras={obras.filter((o) => o.responsavel === nome)}
+                  equipamentos={equipamentos.filter((e) => e.tecnico === nome)}
+                  allObras={obras}
+                />
+              ))}
+              {tecnicos.length === 0 && (
+                <div className={styles.emptyState}>Nenhum técnico encontrado.</div>
+              )}
+            </div>
+          ) : (
+            <DepositoCard items={depositoItems} allObras={obras} />
           )}
         </div>
       </main>

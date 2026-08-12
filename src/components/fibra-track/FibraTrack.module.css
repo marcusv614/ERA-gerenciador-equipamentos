@@ -52,7 +52,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 24px;
 }
 
 .brandIcon {
@@ -64,16 +64,6 @@
   justify-content: center;
   background: var(--accent-dim);
   color: var(--accent);
-}
-
-.brandName {
-  font-weight: 600;
-  font-size: 15px;
-  font-family: var(--font-display);
-}
-
-.brandTrace {
-  margin-bottom: 24px;
 }
 
 .nav {
@@ -653,4 +643,12 @@
     flex-basis: 100%;
     order: 10;
   }
+}
+
+/* Técnicos view */
+.tecnicoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 14px;
+  align-items: start;
 }
