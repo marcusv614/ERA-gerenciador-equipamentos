@@ -1,6 +1,6 @@
-﻿import { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
-  Activity, MapPin, Plus, Search, ChevronLeft, ChevronRight,
+  MapPin, Plus, Search, ChevronLeft, ChevronRight,
   LayoutDashboard, Boxes, Building2, Users, Warehouse,
   ArrowLeftRight, Calendar,
 } from 'lucide-react';
@@ -104,11 +104,6 @@ export function FibraTrack() {
       >
         {sidebarOpen && (
           <div className={styles.sidebarInner}>
-            <div className={styles.brandRow}>
-              <div className={styles.brandIcon}>
-                <Activity size={16} />
-              </div>
-            </div>
 
             <nav className={styles.nav}>
               <div className={`${styles.navItem} ${styles.navItemDashboard}`}>
@@ -335,14 +330,30 @@ export function FibraTrack() {
                       </span>
                     </div>
                     {equipDaObra.length > 0 && (
-                      <div className={styles.obraEquips}>
+                      <div className={styles.obraEquipList}>
                         {equipDaObra.map((e) => {
                           const Icon = tipoIcon[e.tipo];
                           return (
-                            <span key={e.id} className={styles.obraEquipChip}>
-                              <Icon size={11} />
-                              {e.modelo}
-                            </span>
+                            <div key={e.id} className={styles.obraEquipRow}>
+                              <div className={styles.obraEquipInfo}>
+                                <div className={`${styles.obraEquipTile} ${styles[tipoTileClass[e.tipo]] || ''}`}>
+                                  <Icon size={14} />
+                                </div>
+                                <div className={styles.obraEquipText}>
+                                  <div className={styles.obraEquipTopRow}>
+                                    <span className={styles.obraEquipNome}>{e.modelo}</span>
+                                    <span className={styles.obraEquipMov}>mov. {e.saida ? formatDate(e.saida) : '—'}</span>
+                                  </div>
+                                  <div className={styles.obraEquipSerie}>{e.serie}</div>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => setMoverEquip(e)}
+                                className={styles.obraMoverBtn}
+                              >
+                                <ArrowLeftRight size={11} /> Mover
+                              </button>
+                            </div>
                           );
                         })}
                       </div>
