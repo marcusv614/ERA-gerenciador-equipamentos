@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #0e1416;
+  --surface: #131b1e;
+  --surface-2: #1a2427;
+  --border: #26333667;
+  --border-strong: #2c3b3e;
+  --text: #e7edec;
+  --text-muted: #8ca0a2;
+  --accent: #5eeaa0;
+  --accent-dim: rgba(94, 234, 160, 0.14);
+  --warn: #ffb454;
+  --info: #6bb6ff;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}
+
+input,
+select,
+textarea {
+  outline: none;
+}
+
+::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
