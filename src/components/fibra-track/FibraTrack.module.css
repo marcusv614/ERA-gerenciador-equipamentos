@@ -8,7 +8,7 @@
   font-family: var(--font-body);
 }
 
-.root[data-theme='dark'] {
+.root[data-theme="dark"] {
   --bg: #141414;
   --surface: #1d1d1d;
   --surface-2: #28251f;
@@ -16,9 +16,9 @@
   --border-strong: rgba(255, 250, 240, 0.44);
   --text: #fffaf0;
   --text-muted: #d8cdb8;
-  --accent: #FFB13B;
+  --accent: #ffb13b;
   --accent-dim: rgba(var(--era-orange-rgb), 0.28);
-  --warn: #FFE08A;
+  --warn: #ffe08a;
 }
 
 .sidebarScrim {
@@ -103,7 +103,9 @@
   border: none;
   cursor: pointer;
   color: var(--text-muted);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 .navItem:hover {
   color: var(--text);
@@ -226,7 +228,10 @@
   background: var(--surface);
   border: 1px solid var(--border-strong);
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
 .toggleBtn:hover {
   color: var(--accent);
@@ -270,7 +275,10 @@
   background: var(--surface);
   color: var(--text-muted);
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .themeSwitch:hover {
@@ -419,7 +427,10 @@
   color: var(--text-muted);
   border: 1px solid var(--border);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 .filterChip:hover {
   color: var(--text);
@@ -456,7 +467,10 @@
   background: var(--surface);
   border: 1px solid var(--border);
   box-shadow: 0 1px 2px rgba(47, 47, 47, 0.08);
-  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 .equipCard:hover {
   border-color: var(--border-strong);
@@ -572,7 +586,9 @@
   background: var(--accent-dim);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 .moverBtn:hover {
   background: rgba(var(--era-orange-rgb), 0.2);
@@ -588,11 +604,126 @@
   color: var(--text-muted);
 }
 .equipTecnico::before {
-  content: '';
+  content: "";
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--accent);
+}
+
+.equipActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconBtn {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.iconBtn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.equipCardExpanded {
+  grid-column: 1 / -1;
+}
+
+.histPanel {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+  border: 1px dashed var(--border);
+}
+.histPanel h4 {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+}
+.histList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.histRow {
+  display: grid;
+  grid-template-columns: 140px 1fr 240px;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--surface-2);
+}
+.histDate {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.histText {
+  font-size: 13px;
+  font-weight: 600;
+}
+.histObra {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.overlayBack {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 8, 8, 0.4);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+  padding: 24px;
+}
+.overlayPanel {
+  width: 100%;
+  max-width: 980px;
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 12px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 30px 80px rgba(10, 10, 10, 0.6);
+  position: relative;
+}
+.overlayClose {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.overlayClose:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+.overlayMeta {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  margin-bottom: 12px;
 }
 
 .emptyState {
@@ -616,7 +747,10 @@
   background: var(--surface);
   border: 1px solid var(--border);
   box-shadow: 0 1px 2px rgba(47, 47, 47, 0.08);
-  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 .obraCard:hover {
   border-color: var(--border-strong);
@@ -840,7 +974,9 @@
   background: var(--accent-dim);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 .obraMoverBtn:hover {
   background: rgba(var(--era-orange-rgb), 0.2);
