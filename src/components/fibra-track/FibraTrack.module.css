@@ -878,7 +878,7 @@
 /* Técnicos view */
 .tecnicoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: 1fr; /* sempre coluna única: um card abaixo do outro */
   gap: 14px;
   align-items: stretch;
 }
