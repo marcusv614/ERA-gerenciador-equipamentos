@@ -532,9 +532,11 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  /* mostrar descrição completa em múltiplas linhas */
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .equipSerie {
