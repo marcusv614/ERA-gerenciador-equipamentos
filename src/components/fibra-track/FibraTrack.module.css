@@ -878,9 +878,23 @@
 /* Técnicos view */
 .tecnicoGrid {
   display: grid;
-  grid-template-columns: 1fr; /* empilhar em coluna única para alinhamento vertical */
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 14px;
   align-items: stretch;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 600px) {
+  .overlayBack { padding: 12px; }
+  .overlayPanel { max-width: 100%; padding: 16px; border-radius: 10px; }
+  .overlayClose { right: 8px; top: 8px; }
+  .histRow { display: grid; grid-template-columns: 1fr; gap: 8px; align-items: start; padding: 8px; }
+  .histDate, .histText, .histObra { font-size: 13px; }
+  .histDate { color: var(--text-muted); }
+  .content { padding: 12px; }
+  .searchBox { flex-basis: 100%; max-width: none; }
+  .equipGrid { grid-template-columns: 1fr; }
+  .overlayPanel { max-height: 92vh; }
 }
 
 /* Obra - lista vertical de equipamentos */
