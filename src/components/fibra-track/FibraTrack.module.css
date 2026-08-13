@@ -878,9 +878,9 @@
 /* Técnicos view */
 .tecnicoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  grid-template-columns: 1fr; /* empilhar em coluna única para alinhamento vertical */
   gap: 14px;
-  align-items: start;
+  align-items: stretch;
 }
 
 /* Obra - lista vertical de equipamentos */
