@@ -357,24 +357,6 @@ export function FibraTrack() {
         </thead>
         <tbody>${rows}</tbody>
       </table>
-      <div class="signatures">
-        <div class="signature-box">
-          <span>Responsável técnico (Saída)</span>
-          <div class="line"></div>
-        </div>
-        <div class="signature-box">
-          <span>Responsável cliente (Saída)</span>
-          <div class="line"></div>
-        </div>
-        <div class="signature-box">
-          <span>Responsável técnico (Entrada)</span>
-          <div class="line"></div>
-        </div>
-        <div class="signature-box">
-          <span>Responsável técnico (Entrada)</span>
-          <div class="line"></div>
-        </div>
-      </div>
       <p class="muted">Gerado em ${formatDate(new Date())}</p>`;
 
     openPrintableWindow(`Histórico da obra — ${obra.nome}`, body);

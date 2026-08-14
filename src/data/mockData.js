@@ -88,4 +88,13 @@ export const tipos = ['Fluke', 'OTDR', 'Outro'];
 export const statusList = ['Em campo', 'Em estoque', 'Em manutenção', 'Em trânsito'];
 export const obraStatusList = ['Planejada', 'Em andamento', 'Concluída'];
 
+export const tecnicosCadastrados = Array.from(
+  new Set(
+    [
+      ...initialObras.map((obra) => obra.responsavel),
+      ...initialEquip.map((equip) => equip.tecnico),
+    ].filter(Boolean),
+  ),
+).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
 export const tipoIcon = { Fluke: Cable, OTDR: Radio, Outro: Wrench };

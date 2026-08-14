@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ModalShell } from '../modal-shell/ModalShell';
 import { Field } from '../field/Field';
-import { statusList } from '../../data/mockData';
+import { statusList, tecnicosCadastrados } from '../../data/mockData';
 import styles from './MoverEquipModal.module.css';
 
 export function MoverEquipModal({ equip, obras, onClose, onSave }) {
@@ -45,12 +45,16 @@ export function MoverEquipModal({ equip, obras, onClose, onSave }) {
         </Field>
 
         <Field label="Técnico responsável">
-          <input
+          <select
             className={styles.input}
-            placeholder="Opcional"
             value={tecnico}
             onChange={(e) => setTecnico(e.target.value)}
-          />
+          >
+            <option value="">Selecione</option>
+            {tecnicosCadastrados.map((nome) => (
+              <option key={nome} value={nome}>{nome}</option>
+            ))}
+          </select>
         </Field>
 
         <div className={styles.actions}>

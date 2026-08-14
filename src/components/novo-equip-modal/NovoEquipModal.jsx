@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ModalShell } from "../modal-shell/ModalShell";
 import { Field } from "../field/Field";
-import { tipos, tipoIcon } from "../../data/mockData";
+import { tecnicosCadastrados, tipos, tipoIcon } from '../../data/mockData';
 import styles from "./NovoEquipModal.module.css";
 
 export function NovoEquipModal({ obras, onClose, onSave }) {
@@ -82,12 +82,16 @@ export function NovoEquipModal({ obras, onClose, onSave }) {
             </select>
           </Field>
           <Field label="Técnico responsável">
-            <input
+            <select
               className={styles.input}
-              placeholder="Opcional"
               value={form.tecnico}
               onChange={(e) => setForm({ ...form, tecnico: e.target.value })}
-            />
+            >
+              <option value="">Selecione</option>
+              {tecnicosCadastrados.map((nome) => (
+                <option key={nome} value={nome}>{nome}</option>
+              ))}
+            </select>
           </Field>
         </div>
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ModalShell } from '../modal-shell/ModalShell';
 import { Field } from '../field/Field';
-import { obraStatusList } from '../../data/mockData';
+import { obraStatusList, tecnicosCadastrados } from '../../data/mockData';
 import styles from './NovaObraModal.module.css';
 
 export function NovaObraModal({ onClose, onSave }) {
@@ -44,12 +44,16 @@ export function NovaObraModal({ onClose, onSave }) {
 
         <div className={styles.grid2}>
           <Field label="Responsável">
-            <input
+            <select
               className={styles.input}
-              placeholder="Nome do técnico líder"
               value={form.responsavel}
               onChange={(e) => setForm({ ...form, responsavel: e.target.value })}
-            />
+            >
+              <option value="">Selecione</option>
+              {tecnicosCadastrados.map((nome) => (
+                <option key={nome} value={nome}>{nome}</option>
+              ))}
+            </select>
           </Field>
           <Field label="Data de início">
             <input
