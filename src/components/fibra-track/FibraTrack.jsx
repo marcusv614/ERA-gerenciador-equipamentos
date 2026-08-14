@@ -5,6 +5,8 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
   LayoutDashboard,
   Boxes,
   Building2,
@@ -52,6 +54,7 @@ export function FibraTrack() {
   const [filtroStatus, setFiltroStatus] = useState("Todos");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const [topbarCollapsed, setTopbarCollapsed] = useState(false);
 
   const [showNovaObra, setShowNovaObra] = useState(false);
   const [showNovoEquip, setShowNovoEquip] = useState(false);
@@ -268,7 +271,9 @@ export function FibraTrack() {
       {/* Main */}
       <main className={styles.main}>
         {/* Topbar */}
-        <header className={styles.topbar}>
+        <header
+          className={`${styles.topbar} ${topbarCollapsed ? styles.topbarCollapsed : ""}`}
+        >
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             className={styles.toggleBtn}
@@ -300,6 +305,20 @@ export function FibraTrack() {
                     : "Itens fora de campo — estoque, manutenção e trânsito"}
             </p>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setTopbarCollapsed((v) => !v)}
+            className={styles.topbarCollapseBtn}
+            aria-label={topbarCollapsed ? "Expandir barra superior" : "Retrair barra superior"}
+            aria-expanded={!topbarCollapsed}
+          >
+            {topbarCollapsed ? (
+              <ChevronDown size={16} />
+            ) : (
+              <ChevronUp size={16} />
+            )}
+          </button>
 
           <div className={styles.topbarRight}>
             <button
