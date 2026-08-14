@@ -243,14 +243,14 @@ export function FibraTrack() {
     const rows = listaAtual.length
       ? listaAtual
           .map((e) => {
-            const entrada = e.saida ? formatDate(e.saida) : "—";
+            const entrada = e.data || e.saida || "—";
             return `
                 <tr>
                   <td>${e.tipo}</td>
                   <td>${e.modelo}</td>
                   <td>${e.serie}</td>
                   <td>${e.tecnico || "—"}</td>
-                  <td>${entrada}</td>
+                  <td>${entrada ? formatDate(entrada) : "—"}</td>
                 </tr>`;
           })
           .join("")
@@ -313,16 +313,16 @@ export function FibraTrack() {
     const rows = historico.length
       ? historico
           .map((e) => {
-            const entrada = e.saida ? formatDate(e.saida) : "—";
-            const saida = e.saida ? formatDate(e.saida) : "—";
+            const entrada = e.data || e.saida || "—";
+            const saida = e.saida || "—";
             return `
               <tr>
                 <td>${e.tipo}</td>
                 <td>${e.modelo}</td>
                 <td>${e.serie}</td>
                 <td>${e.tecnico || "—"}</td>
-                <td>${entrada}</td>
-                <td>${saida}</td>
+                <td>${entrada ? formatDate(entrada) : "—"}</td>
+                <td>${saida ? formatDate(saida) : "—"}</td>
               </tr>`;
           })
           .join("")

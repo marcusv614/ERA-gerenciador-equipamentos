@@ -1,17 +1,27 @@
-import { useState } from 'react';
-import { ModalShell } from '../modal-shell/ModalShell';
-import { Field } from '../field/Field';
-import { tipos, tipoIcon } from '../../data/mockData';
-import styles from './NovoEquipModal.module.css';
+import { useState } from "react";
+import { ModalShell } from "../modal-shell/ModalShell";
+import { Field } from "../field/Field";
+import { tipos, tipoIcon } from "../../data/mockData";
+import styles from "./NovoEquipModal.module.css";
 
 export function NovoEquipModal({ obras, onClose, onSave }) {
   const [form, setForm] = useState({
-    tipo: 'OTDR', modelo: '', serie: '', status: 'Em estoque', obraId: '', tecnico: '',
+    tipo: "OTDR",
+    modelo: "",
+    serie: "",
+    status: "Em estoque",
+    obraId: "",
+    tecnico: "",
+    data: "",
   });
   const canSave = form.modelo.trim() && form.serie.trim();
 
   return (
-    <ModalShell title="Novo equipamento" subtitle="Cadastre um instrumento na frota" onClose={onClose}>
+    <ModalShell
+      title="Novo equipamento"
+      subtitle="Cadastre um instrumento na frota"
+      onClose={onClose}
+    >
       <div className={styles.form}>
         <Field label="Tipo">
           <div className={styles.typeRow}>
@@ -22,10 +32,10 @@ export function NovoEquipModal({ obras, onClose, onSave }) {
                   key={t}
                   type="button"
                   onClick={() => setForm({ ...form, tipo: t })}
-                  className={`${styles.typeBtn} ${form.tipo === t ? styles.typeBtnActive : ''}`}
+                  className={`${styles.typeBtn} ${form.tipo === t ? styles.typeBtnActive : ""}`}
                 >
                   <Icon size={13} />
-                  {t === 'Outro' ? 'Outro' : t}
+                  {t === "Outro" ? "Outro" : t}
                 </button>
               );
             })}
@@ -59,13 +69,15 @@ export function NovoEquipModal({ obras, onClose, onSave }) {
                 setForm({
                   ...form,
                   obraId: e.target.value,
-                  status: e.target.value ? 'Em campo' : 'Em estoque',
+                  status: e.target.value ? "Em campo" : "Em estoque",
                 })
               }
             >
               <option value="">Depósito central</option>
               {obras.map((o) => (
-                <option key={o.id} value={o.id}>{o.nome}</option>
+                <option key={o.id} value={o.id}>
+                  {o.nome}
+                </option>
               ))}
             </select>
           </Field>
@@ -79,12 +91,28 @@ export function NovoEquipModal({ obras, onClose, onSave }) {
           </Field>
         </div>
 
+        <Field label="Data de entrada (opcional)">
+          <input
+            type="date"
+            className={styles.input}
+            value={form.data}
+            onChange={(e) => setForm({ ...form, data: e.target.value })}
+          />
+        </Field>
+
         <div className={styles.actions}>
-          <button onClick={onClose} className={styles.cancel}>Cancelar</button>
+          <button onClick={onClose} className={styles.cancel}>
+            Cancelar
+          </button>
           <button
             disabled={!canSave}
             onClick={() =>
-              onSave({ ...form, obraId: form.obraId || null, tecnico: form.tecnico || null })
+              onSave({
+                ...form,
+                obraId: form.obraId || null,
+                tecnico: form.tecnico || null,
+                data: form.data || null,
+              })
             }
             className={styles.submit}
           >
