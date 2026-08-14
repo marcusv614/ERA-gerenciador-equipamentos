@@ -155,28 +155,229 @@ export function FibraTrack() {
     return list;
   }
 
+  function openPrintableWindow(title, bodyHtml) {
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
+      <style>
+        body{font-family:Arial,Helvetica,sans-serif;padding:8px 10px;color:#111;background:#fff}
+        h1{font-size:16px;margin:0 0 5px;font-weight:700}h2{font-size:12px;margin:10px 0 6px}
+        .doc-card{margin-bottom:8px}
+        .doc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+        .doc-logo{max-width:110px;height:auto;display:block;margin-right:auto}
+        .header{display:flex;flex-wrap:wrap;gap:4px}
+        .header-row{flex:1 1 130px;display:flex;flex-direction:column;gap:1px;padding:4px 6px;border:1px solid #d7d7d7;border-radius:4px;background:#fff;min-height:26px}
+        .label{display:block;font-size:7px;color:#666;text-transform:uppercase;letter-spacing:.03em;line-height:1.1}
+        .value{font-size:9px;font-weight:600;color:#111;line-height:1.2}
+        table{width:100%;border-collapse:collapse;margin-top:7px;table-layout:auto}
+        th,td{padding:5px 4px;border:1px solid #d9d9d9;text-align:left;vertical-align:top;font-size:9px;word-break:break-word}
+        th{background:#f3f3f3}
+        .muted{color:#666;font-size:9px}
+        .signatures{display:grid;grid-template-columns:repeat(2,minmax(180px,1fr));gap:14px;margin-top:18px}
+        .signature-box{display:flex;flex-direction:column;gap:6px;font-size:9px}
+        .line{border-bottom:1px solid #111;padding-top:18px}
+      </style>
+      </head><body>
+      ${bodyHtml}
+      </body></html>`;
+
+    const printWindow = window.open("", "_blank");
+
+    if (printWindow) {
+      printWindow.document.write(html);
+      printWindow.document.close();
+      setTimeout(() => {
+        printWindow.focus();
+        printWindow.print();
+      }, 300);
+      return;
+    }
+
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+    iframe.style.opacity = "0";
+    iframe.style.pointerEvents = "none";
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    setTimeout(() => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    }, 300);
+
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+    }, 1500);
+  }
+
   // Exporta histórico simples abrindo uma nova janela pronta para impressão (usuário pode salvar em PDF)
   function exportHistoryPdf(equip) {
     const historico = getHistorico(equip);
     const obraName = (id) =>
       id ? (obraById(id) || {}).nome : "Depósito central";
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Histórico ${equip.modelo}</title>
-      <style>body{font-family:Arial,Helvetica,sans-serif;padding:20px;color:#111}h1{font-size:18px}table{width:100%;border-collapse:collapse}td,th{padding:8px;border:1px solid #ddd;text-align:left}</style>
-      </head><body>
+    const html = `
       <h1>Histórico de movimentação — ${equip.modelo} · ${equip.serie}</h1>
       <table><thead><tr><th>Data</th><th>Técnico</th><th>Obra</th></tr></thead><tbody>
-      ${historico.map((h) => `<tr><td>${formatDate(h.date || h.saida || h.when)}</td><td>${h.tecnico || "—"}</td><td>${obraName(h.obraId)}</td></tr>`).join("")}
+      ${historico
+        .map(
+          (h) =>
+            `<tr><td>${formatDate(h.date || h.saida || h.when)}</td><td>${h.tecnico || "—"}</td><td>${obraName(h.obraId)}</td></tr>`,
+        )
+        .join("")}
       </tbody></table>
-      <p>Gerado em ${formatDate(new Date())}</p>
-      </body></html>`;
-    const w = window.open("", "_blank");
-    if (!w) return alert("Não foi possível abrir nova janela para exportar.");
-    w.document.write(html);
-    w.document.close();
-    // delay para garantir carregamento
-    setTimeout(() => {
-      w.print();
-    }, 500);
+      <p class="muted">Gerado em ${formatDate(new Date())}</p>`;
+
+    openPrintableWindow(`Histórico ${equip.modelo}`, html);
+  }
+
+  function exportObraCautelaPdf(obra) {
+    const listaAtual = equipamentos.filter((e) => e.obraId === obra.id);
+    const tecnicos = [
+      ...new Set(listaAtual.map((e) => e.tecnico).filter(Boolean)),
+    ];
+    const rows = listaAtual.length
+      ? listaAtual
+          .map((e) => {
+            const entrada = e.saida ? formatDate(e.saida) : "—";
+            return `
+                <tr>
+                  <td>${e.tipo}</td>
+                  <td>${e.modelo}</td>
+                  <td>${e.serie}</td>
+                  <td>${e.tecnico || "—"}</td>
+                  <td>${entrada}</td>
+                </tr>`;
+          })
+          .join("")
+      : '<tr><td colspan="5">Nenhum equipamento cadastrado na obra.</td></tr>';
+
+    const body = `
+      <div class="doc-card">
+        <div class="doc-top">
+          <img class="doc-logo" src="${eraLogo}" alt="ERA Engenharia de Redes da Amazônia" />
+          <h1>Cautela de materiais</h1>
+        </div>
+        <div class="header">
+          <div class="header-row"><span class="label">Obra</span><span class="value">${obra.nome}</span></div>
+          <div class="header-row"><span class="label">Data da obra</span><span class="value">${formatDate(obra.inicio)}</span></div>
+          <div class="header-row"><span class="label">Cliente</span><span class="value">${obra.cliente}</span></div>
+          <div class="header-row"><span class="label">Localização</span><span class="value">${obra.cidade}</span></div>
+          <div class="header-row"><span class="label">Responsável técnico</span><span class="value">${obra.responsavel || "—"}</span></div>
+          <div class="header-row"><span class="label">Técnicos na obra</span><span class="value">${tecnicos.length ? tecnicos.join(", ") : "—"}</span></div>
+        </div>
+      </div>
+      <h2>Equipamentos atuais</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Modelo</th>
+            <th>Série</th>
+            <th>Técnico</th>
+            <th>Data de entrada</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="signatures">
+        <div class="signature-box">
+          <span>Responsável técnico (Saída)</span>
+          <div class="line"></div>
+        </div>
+        <div class="signature-box">
+          <span>Responsável cliente (Saída)</span>
+          <div class="line"></div>
+        </div>
+        <div class="signature-box">
+          <span>Responsável técnico (Entrada)</span>
+          <div class="line"></div>
+        </div>
+        <div class="signature-box">
+          <span>Responsável técnico (Entrada)</span>
+          <div class="line"></div>
+        </div>
+      </div>
+      <p class="muted">Gerado em ${formatDate(new Date())}</p>`;
+
+    openPrintableWindow(`Cautela — ${obra.nome}`, body);
+  }
+
+  function exportObraHistoricoPdf(obra) {
+    const historico = equipamentos.filter((e) => e.obraId === obra.id);
+
+    const rows = historico.length
+      ? historico
+          .map((e) => {
+            const entrada = e.saida ? formatDate(e.saida) : "—";
+            const saida = e.saida ? formatDate(e.saida) : "—";
+            return `
+              <tr>
+                <td>${e.tipo}</td>
+                <td>${e.modelo}</td>
+                <td>${e.serie}</td>
+                <td>${e.tecnico || "—"}</td>
+                <td>${entrada}</td>
+                <td>${saida}</td>
+              </tr>`;
+          })
+          .join("")
+      : '<tr><td colspan="6">Nenhum histórico de equipamentos registrado para esta obra.</td></tr>';
+
+    const body = `
+      <div class="doc-card">
+        <div class="doc-top">
+          <img class="doc-logo" src="${eraLogo}" alt="ERA Engenharia de Redes da Amazônia" />
+          <h1>Histórico da obra</h1>
+        </div>
+        <div class="header">
+          <div class="header-row"><span class="label">Obra</span><span class="value">${obra.nome}</span></div>
+          <div class="header-row"><span class="label">Data da obra</span><span class="value">${formatDate(obra.inicio)}</span></div>
+          <div class="header-row"><span class="label">Cliente</span><span class="value">${obra.cliente}</span></div>
+          <div class="header-row"><span class="label">Localização</span><span class="value">${obra.cidade}</span></div>
+          <div class="header-row"><span class="label">Responsável técnico</span><span class="value">${obra.responsavel || "—"}</span></div>
+          <div class="header-row"><span class="label">Técnicos na obra</span><span class="value">${historico.some((e) => e.tecnico) ? [...new Set(historico.map((e) => e.tecnico).filter(Boolean))].join(", ") : "—"}</span></div>
+        </div>
+      </div>
+      <h2>Equipamentos que passaram pela obra</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Modelo</th>
+            <th>Série</th>
+            <th>Técnico</th>
+            <th>Data de entrada</th>
+            <th>Data de saída</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="signatures">
+        <div class="signature-box">
+          <span>Responsável técnico (Saída)</span>
+          <div class="line"></div>
+        </div>
+        <div class="signature-box">
+          <span>Responsável cliente (Saída)</span>
+          <div class="line"></div>
+        </div>
+        <div class="signature-box">
+          <span>Responsável técnico (Entrada)</span>
+          <div class="line"></div>
+        </div>
+        <div class="signature-box">
+          <span>Responsável técnico (Entrada)</span>
+          <div class="line"></div>
+        </div>
+      </div>
+      <p class="muted">Gerado em ${formatDate(new Date())}</p>`;
+
+    openPrintableWindow(`Histórico da obra — ${obra.nome}`, body);
   }
 
   return (
@@ -310,7 +511,11 @@ export function FibraTrack() {
             type="button"
             onClick={() => setTopbarCollapsed((v) => !v)}
             className={styles.topbarCollapseBtn}
-            aria-label={topbarCollapsed ? "Expandir barra superior" : "Retrair barra superior"}
+            aria-label={
+              topbarCollapsed
+                ? "Expandir barra superior"
+                : "Retrair barra superior"
+            }
             aria-expanded={!topbarCollapsed}
           >
             {topbarCollapsed ? (
@@ -517,9 +722,29 @@ export function FibraTrack() {
                           <span>Resp.: {o.responsavel}</span>
                         </div>
                       </div>
-                      <span className={styles.obraCount}>
-                        {equipDaObra.length} equip.
-                      </span>
+                      <div className={styles.obraActionsGroup}>
+                        <span className={styles.obraCount}>
+                          {equipDaObra.length} equip.
+                        </span>
+                        <div className={styles.obraExportActions}>
+                          <button
+                            type="button"
+                            className={styles.obraExportBtn}
+                            onClick={() => exportObraCautelaPdf(o)}
+                            title="Exportar cautela"
+                          >
+                            <FileText size={13} /> Exportar cautela
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.obraExportBtnSecondary}
+                            onClick={() => exportObraHistoricoPdf(o)}
+                            title="Exportar histórico da obra"
+                          >
+                            <Download size={13} /> Histórico da obra
+                          </button>
+                        </div>
+                      </div>
                     </div>
                     {equipDaObra.length > 0 && (
                       <div className={styles.obraEquipList}>

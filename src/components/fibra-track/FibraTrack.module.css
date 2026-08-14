@@ -828,6 +828,13 @@
   color: var(--text);
 }
 
+.obraActionsGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
 .obraCount {
   font-size: 11.5px;
   font-weight: 600;
@@ -837,6 +844,47 @@
   background: var(--surface-2);
   color: var(--text-muted);
   border: 1px solid var(--border);
+}
+
+.obraExportActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.obraExportBtn,
+.obraExportBtnSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+}
+
+.obraExportBtn {
+  background: var(--accent);
+  border: 1px solid transparent;
+  color: #fffaf0;
+}
+
+.obraExportBtnSecondary {
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+}
+
+.obraExportBtn:hover,
+.obraExportBtnSecondary:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
 }
 
 .obraEquips {
@@ -912,16 +960,46 @@
 
 /* Mobile-specific adjustments */
 @media (max-width: 600px) {
-  .overlayBack { padding: 12px; }
-  .overlayPanel { max-width: 100%; padding: 16px; border-radius: 10px; }
-  .overlayClose { right: 8px; top: 8px; }
-  .histRow { display: grid; grid-template-columns: 1fr; gap: 8px; align-items: start; padding: 8px; }
-  .histDate, .histText, .histObra { font-size: 13px; }
-  .histDate { color: var(--text-muted); }
-  .content { padding: 12px; }
-  .searchBox { flex-basis: 100%; max-width: none; }
-  .equipGrid { grid-template-columns: 1fr; }
-  .overlayPanel { max-height: 92vh; }
+  .overlayBack {
+    padding: 12px;
+  }
+  .overlayPanel {
+    max-width: 100%;
+    padding: 16px;
+    border-radius: 10px;
+  }
+  .overlayClose {
+    right: 8px;
+    top: 8px;
+  }
+  .histRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: start;
+    padding: 8px;
+  }
+  .histDate,
+  .histText,
+  .histObra {
+    font-size: 13px;
+  }
+  .histDate {
+    color: var(--text-muted);
+  }
+  .content {
+    padding: 12px;
+  }
+  .searchBox {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .equipGrid {
+    grid-template-columns: 1fr;
+  }
+  .overlayPanel {
+    max-height: 92vh;
+  }
 }
 
 /* Obra - lista vertical de equipamentos */
