@@ -1336,9 +1336,9 @@ button.equipCard {
   .btnPrimary {
     width: auto;
     flex: 1 1 130px;
-    min-height: 38px;
+    min-height: 44px;
     justify-content: center;
-    padding: 8px 10px;
+    padding: 10px 12px;
   }
 
   .themeSwitch {
@@ -1362,6 +1362,7 @@ button.equipCard {
 
   .filterChip {
     flex: 0 0 auto;
+    min-height: 40px;
     padding-inline: 12px;
   }
 
@@ -1377,6 +1378,21 @@ button.equipCard {
   .equipCard,
   .obraCard {
     padding: 14px;
+  }
+
+  .equipModel {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .iconBtn {
+    width: 44px;
+    height: 44px;
   }
 
   .equipHead,
@@ -1395,7 +1411,13 @@ button.equipCard {
   .obraMoverBtn {
     width: 100%;
     justify-content: center;
-    min-height: 34px;
+    min-height: 44px;
+  }
+
+  .obraExportBtn,
+  .obraExportBtnSecondary {
+    min-height: 44px;
+    padding: 10px 14px;
   }
 
   .obraMeta {
@@ -1450,6 +1472,7 @@ button.equipCard {
 
   .equipModel,
   .obraEquipNome {
+    font-size: 12.5px;
     white-space: normal;
   }
 }
