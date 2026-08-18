@@ -68,7 +68,7 @@ function criarCabecalhoObra(obra, tecnicos, titulo) {
     <div class="header-row"><span class="label">Data da obra</span><span class="value">${formatarData(obra.inicio)}</span></div>
     <div class="header-row"><span class="label">Cliente</span><span class="value">${textoSeguro(obra.cliente)}</span></div>
     <div class="header-row"><span class="label">Localização</span><span class="value">${textoSeguro(obra.cidade)}</span></div>
-    <div class="header-row"><span class="label">Responsável técnico</span><span class="value">${textoSeguro(obra.responsavel)}</span></div>
+    <div class="header-row"><span class="label">Responsáveis técnicos</span><span class="value">${textoSeguro(obra.responsaveis?.join(', '))}</span></div>
     <div class="header-row"><span class="label">Técnicos na obra</span><span class="value">${textoSeguro(tecnicos.length ? tecnicos.join(', ') : '—')}</span></div>
   </div></div>`;
 }

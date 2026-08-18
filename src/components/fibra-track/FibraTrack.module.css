@@ -34,7 +34,11 @@
   flex-direction: column;
   position: relative;
   background: var(--surface);
-  transition: width 0.18s ease;
+  border-right: 1px solid transparent;
+  transition:
+    width 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.24s ease,
+    box-shadow 0.3s ease;
 }
 .sidebar {
   scrollbar-width: thin;
@@ -50,12 +54,12 @@
 
 .sidebarOpen {
   width: 244px;
-  border-right: 1px solid var(--border);
+  border-right-color: var(--border);
 }
 
 .sidebarClosed {
   width: 0;
-  border-right: none;
+  border-right-color: transparent;
   overflow: hidden;
 }
 
@@ -66,6 +70,24 @@
   flex-direction: column;
   height: 100%;
   min-width: 244px;
+  opacity: 1;
+  transform: translateX(0);
+  visibility: visible;
+  transition:
+    opacity 0.22s ease 0.05s,
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0s;
+}
+
+.sidebarInnerHidden {
+  opacity: 0;
+  transform: translateX(-16px);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.16s ease,
+    transform 0.28s cubic-bezier(0.4, 0, 1, 1),
+    visibility 0s linear 0.3s;
 }
 
 .brandRow {
@@ -117,6 +139,11 @@
   color: var(--text);
 }
 
+.navItemChevron {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .navSub {
   margin-left: 24px;
   display: flex;
@@ -124,6 +151,9 @@
   gap: 2px;
   margin-bottom: 4px;
   color: var(--text-muted);
+  max-height: 280px;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .navSubItem {
@@ -140,6 +170,13 @@
   cursor: pointer;
   color: var(--text-muted);
   transition: color 0.15s ease;
+}
+
+.navSubItem span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .navSubItem:hover {
   color: var(--text);
@@ -209,78 +246,74 @@
   transition: padding 0.18s ease;
 }
 
-.sidebarEdgeToggle:not(.sidebarEdgeToggleOpen) + .main .topbar {
-  padding-left: 64px;
-}
-
 .topbar > div:not(.topbarRight) {
   min-width: 0;
 }
 
 .sidebarEdgeToggle {
-  position: fixed;
-  top: 18px;
-  left: 12px;
+  position: absolute;
+  top: 50%;
+  left: 0;
   z-index: 60;
-  width: 38px;
-  height: 38px;
+  width: 24px;
+  height: 40px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 11px;
+  border-radius: 0 8px 8px 0;
   color: var(--text-muted);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 24px rgba(47, 47, 47, 0.14);
-  backdrop-filter: blur(10px);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  transform: translateY(-50%);
   cursor: pointer;
   transition:
-    left 0.18s ease,
-    transform 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease,
-    background 0.15s ease;
+    left 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .sidebarEdgeToggleOpen {
-  left: 224px;
+  left: 232px;
+  border-radius: 8px;
 }
 .sidebarEdgeToggle:hover {
   color: var(--accent);
-  border-color: rgba(var(--era-orange-rgb), 0.48);
-  background: var(--surface-2);
-  transform: translateY(-1px);
+  background: var(--accent-dim);
+  box-shadow: none;
+}
+.sidebarEdgeToggle:focus-visible {
+  outline: 3px solid var(--accent-dim);
+  outline-offset: 2px;
 }
 
 /* Botão de retrair/expandir topbar — visível apenas no mobile */
 .topbarCollapseBtn {
   display: none;
-  position: absolute;
-  left: 50%;
-  bottom: -11px;
-  z-index: 5;
-  width: 46px;
-  height: 22px;
+  width: 28px;
+  height: 24px;
   padding: 0;
   align-items: center;
   justify-content: center;
-  border-radius: 0 0 12px 12px;
+  flex-shrink: 0;
+  border-radius: 0 0 8px 8px;
   color: var(--text-muted);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: none;
-  box-shadow: 0 5px 12px rgba(47, 47, 47, 0.1);
+  background: transparent;
+  border: 0;
   cursor: pointer;
-  transform: translateX(-50%);
   transition:
-    color 0.15s ease,
-    border-color 0.15s ease,
-    background 0.15s ease;
+    color 0.2s ease,
+    background 0.2s ease;
 }
 .topbarCollapseBtn:hover {
   color: var(--accent);
-  border-color: rgba(var(--era-orange-rgb), 0.48);
-  background: var(--surface-2);
+  background: var(--accent-dim);
+}
+.topbarCollapseBtn:focus-visible {
+  outline: 3px solid var(--accent-dim);
+  outline-offset: 2px;
 }
 
 .title {
@@ -1014,12 +1047,12 @@ button.equipCard {
   }
   .sidebarOpen {
     width: 244px;
-    border-right: 1px solid var(--border);
+    border-right-color: var(--border);
     box-shadow: 20px 0 40px rgba(47, 47, 47, 0.2);
   }
   .sidebarClosed {
     width: 0;
-    border-right: none;
+    border-right-color: transparent;
   }
   .equipGrid {
     grid-template-columns: minmax(0, 1fr);
@@ -1035,6 +1068,15 @@ button.equipCard {
     max-width: none;
     flex-basis: 100%;
     order: 10;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebarInner,
+  .sidebarEdgeToggle,
+  .sidebarScrim {
+    transition-duration: 0.01ms;
   }
 }
 
@@ -1206,6 +1248,14 @@ button.equipCard {
     padding: 0;
     background: rgba(20, 20, 20, 0.42);
     border: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebarScrimVisible {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .sidebar {
@@ -1234,15 +1284,29 @@ button.equipCard {
     align-items: flex-start;
     gap: 10px;
     padding: 12px 16px;
-    transition: padding 0.2s ease;
+    transition:
+      padding 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.2s ease;
   }
 
   .topbarCollapseBtn {
     display: inline-flex;
+    position: absolute;
+    left: 50%;
+    bottom: -12px;
+    z-index: 20;
+    margin: 0;
+    transform: translateX(-50%);
   }
 
   .topbarCollapsed {
-    padding: 8px 16px;
+    padding: 0;
+    border-bottom-color: transparent;
+  }
+
+  .topbarCollapsed .topbarCollapseBtn {
+    top: 0;
+    bottom: auto;
   }
 
   .topbarCollapsed > div:not(.topbarRight),
@@ -1251,38 +1315,30 @@ button.equipCard {
   }
 
   .sidebarEdgeToggleOpen {
-    left: calc(min(82vw, 292px) - 19px);
+    left: calc(min(82vw, 292px) - 12px);
   }
 
   .topbarRight {
     width: 100%;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-left: 0;
   }
 
   .searchBox {
-    grid-column: 1 / -1;
     order: initial;
-    flex-basis: auto;
+    flex: 1 1 calc(100% - 80px);
     max-width: none;
   }
 
   .btnGhost,
   .btnPrimary {
-    width: 100%;
+    width: auto;
+    flex: 1 1 130px;
     min-height: 38px;
     justify-content: center;
     padding: 8px 10px;
-  }
-
-  .btnGhost {
-    grid-column: 1 / 2;
-  }
-
-  .btnPrimary {
-    grid-column: 2 / 3;
   }
 
   .themeSwitch {
@@ -1363,7 +1419,7 @@ button.equipCard {
   }
 
   .topbarCollapsed {
-    padding: 8px 12px;
+    padding: 0;
   }
 
   .title {

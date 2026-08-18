@@ -29,7 +29,7 @@ export function useFiltrosPainel({ obras, equipamentos, funcionarios }) {
       obra.nome,
       obra.cliente,
       obra.cidade,
-      obra.responsavel,
+      obra.responsaveis?.join(' '),
       obra.status,
     ].some((valor) => valor?.toLocaleLowerCase('pt-BR').includes(termoNormalizado)));
   }, [obras, termoBusca]);

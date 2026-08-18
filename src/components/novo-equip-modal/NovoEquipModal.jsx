@@ -87,15 +87,15 @@ export function ModalNovoEquipamento({ obras, tecnicosCadastrados, seriesCadastr
             </select>
           </CampoFormulario>
           <CampoFormulario rotulo="Técnico responsável">
-            <input
+            <select
               className={styles.input}
               value={form.tecnico}
               onChange={(e) => setForm({ ...form, tecnico: e.target.value })}
-              list="tecnicos-novo-equipamento"
-              placeholder="Selecione ou informe um nome"
               disabled={!form.obraId}
-            />
-            <datalist id="tecnicos-novo-equipamento">{tecnicosCadastrados.map((nome) => <option key={nome} value={nome} />)}</datalist>
+            >
+              <option value="">Selecione um funcionário</option>
+              {tecnicosCadastrados.map((nome) => <option key={nome} value={nome}>{nome}</option>)}
+            </select>
           </CampoFormulario>
         </div>
 

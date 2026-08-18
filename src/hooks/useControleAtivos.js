@@ -24,7 +24,7 @@ export function useControleAtivos() {
   }), [equipamentos]);
 
   const tecnicosCadastrados = useMemo(() => funcionarios
-    .filter(({ status }) => status === 'Ativo')
+    .filter(({ status, cargo }) => status === 'Ativo' && !cargo.toLocaleLowerCase('pt-BR').includes('gerente'))
     .map(({ nome }) => nome)
     .sort((primeiroNome, segundoNome) => primeiroNome.localeCompare(segundoNome, 'pt-BR')),
   [funcionarios]);

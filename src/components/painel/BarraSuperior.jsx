@@ -15,12 +15,9 @@ export function BarraSuperior({ telaAtual, recolhida, modoEscuro, termoBusca, ao
     <div className={estilos.topbarRight}>
       <button type="button" role="switch" aria-checked={modoEscuro} aria-label="Alternar modo escuro" onClick={aoAlternarTema} className={`${estilos.themeSwitch} ${modoEscuro ? estilos.themeSwitchActive : ''}`}><Sun size={14} className={estilos.themeIconLight} /><span className={estilos.themeTrack}><span className={estilos.themeThumb} /></span><Moon size={14} className={estilos.themeIconDark} /></button>
       <div className={estilos.searchBox}><Search size={14} className={estilos.searchIcon} /><input value={termoBusca} onChange={(evento) => aoBuscar(evento.target.value)} placeholder={textoBusca} className={estilos.searchInput} /></div>
-      {telaAtual === 'funcionarios' ? (
-        <button onClick={aoAbrirNovoFuncionario} className={estilos.btnPrimary}><Plus size={15} /> Funcionário</button>
-      ) : <>
-        <button onClick={aoAbrirNovoEquipamento} className={estilos.btnGhost}><Plus size={15} /> Equipamento</button>
-        <button onClick={aoAbrirNovaObra} className={estilos.btnPrimary}><Plus size={15} /> Nova obra</button>
-      </>}
+      <button onClick={aoAbrirNovoFuncionario} className={estilos.btnGhost}><Plus size={15} /> Funcionário</button>
+      <button onClick={aoAbrirNovoEquipamento} className={estilos.btnGhost}><Plus size={15} /> Equipamento</button>
+      <button onClick={aoAbrirNovaObra} className={estilos.btnPrimary}><Plus size={15} /> Nova obra</button>
     </div>
   </header>;
 }

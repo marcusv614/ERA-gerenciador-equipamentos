@@ -4,16 +4,16 @@ import { Radio, Wrench, Cable } from 'lucide-react';
 // Obras — cobrem todos os status (Planejada / Em andamento / Concluída)
 // ---------------------------------------------------------------------------
 export const obrasIniciais = [
-  { id: 'o1', nome: 'Expansão FTTH — Zona Norte', cliente: 'Claro', cidade: 'Manaus, AM', responsavel: 'Carlos Nunes', inicio: '2026-06-02', status: 'Em andamento' },
-  { id: 'o2', nome: 'Manutenção Backbone BR-174', cliente: 'Vivo', cidade: 'Manaus, AM', responsavel: 'Ana Paula Reis', inicio: '2026-07-10', status: 'Em andamento' },
-  { id: 'o3', nome: 'Implantação Data Center', cliente: 'Oi', cidade: 'Itacoatiara, AM', responsavel: 'Bruno Alencar', inicio: '2026-05-20', status: 'Em andamento' },
-  { id: 'o4', nome: 'Certificação Rede Corporativa', cliente: 'TIM', cidade: 'Parintins, AM', responsavel: 'Fernanda Lima', inicio: '2026-04-15', status: 'Concluída' },
-  { id: 'o5', nome: 'Expansão FTTH — Zona Sul', cliente: 'Claro', cidade: 'Manaus, AM', responsavel: 'Amanda Castro', inicio: '2026-08-01', status: 'Em andamento' },
-  { id: 'o6', nome: 'Backbone Óptico Manaus–Rio Preto', cliente: 'Vivo', cidade: 'Presidente Figueiredo, AM', responsavel: 'Júlia Mendes', inicio: '2026-06-18', status: 'Em andamento' },
-  { id: 'o7', nome: 'Redes de Transmissão Rural 4G', cliente: 'Algar', cidade: 'Careiro, AM', responsavel: 'Rafael Torres', inicio: '2026-03-02', status: 'Em andamento' },
-  { id: 'o8', nome: 'Modernização de Headend', cliente: 'Oi', cidade: 'Manaus, AM', responsavel: 'Diego Farias', inicio: '2026-02-12', status: 'Em andamento' },
-  { id: 'o9', nome: 'Rede Metropolitana de Alta Disponibilidade', cliente: 'TIM', cidade: 'Itacoatiara, AM', responsavel: 'Marcos Vinícius', inicio: '2025-11-05', status: 'Concluída' },
-  { id: 'o10', nome: 'Fibra para Empresa Corporativa', cliente: 'Vivo', cidade: 'Manaus, AM', responsavel: 'Ana Paula Reis', inicio: '2026-09-15', status: 'Planejada' },
+  { id: 'o1', nome: 'Expansão FTTH — Zona Norte', cliente: 'Claro', cidade: 'Manaus, AM', responsaveis: ['Carlos Nunes', 'Diego Farias'], inicio: '2026-06-02', status: 'Em andamento' },
+  { id: 'o2', nome: 'Manutenção Backbone BR-174', cliente: 'Vivo', cidade: 'Manaus, AM', responsaveis: ['Ana Paula Reis', 'Marcos Vinícius'], inicio: '2026-07-10', status: 'Em andamento' },
+  { id: 'o3', nome: 'Implantação Data Center', cliente: 'Oi', cidade: 'Itacoatiara, AM', responsaveis: ['Bruno Alencar'], inicio: '2026-05-20', status: 'Em andamento' },
+  { id: 'o4', nome: 'Certificação Rede Corporativa', cliente: 'TIM', cidade: 'Parintins, AM', responsaveis: ['Fernanda Lima'], inicio: '2026-04-15', status: 'Concluída' },
+  { id: 'o5', nome: 'Expansão FTTH — Zona Sul', cliente: 'Claro', cidade: 'Manaus, AM', responsaveis: ['Amanda Castro'], inicio: '2026-08-01', status: 'Em andamento' },
+  { id: 'o6', nome: 'Backbone Óptico Manaus–Rio Preto', cliente: 'Vivo', cidade: 'Presidente Figueiredo, AM', responsaveis: ['Júlia Mendes', 'Marcos Vinícius'], inicio: '2026-06-18', status: 'Em andamento' },
+  { id: 'o7', nome: 'Redes de Transmissão Rural 4G', cliente: 'Algar', cidade: 'Careiro, AM', responsaveis: ['Rafael Torres'], inicio: '2026-03-02', status: 'Em andamento' },
+  { id: 'o8', nome: 'Modernização de Headend', cliente: 'Oi', cidade: 'Manaus, AM', responsaveis: ['Diego Farias'], inicio: '2026-02-12', status: 'Em andamento' },
+  { id: 'o9', nome: 'Rede Metropolitana de Alta Disponibilidade', cliente: 'TIM', cidade: 'Itacoatiara, AM', responsaveis: ['Marcos Vinícius'], inicio: '2025-11-05', status: 'Concluída' },
+  { id: 'o10', nome: 'Fibra para Empresa Corporativa', cliente: 'Vivo', cidade: 'Manaus, AM', responsaveis: ['Ana Paula Reis'], inicio: '2026-09-15', status: 'Planejada' },
 ];
 
 // ---------------------------------------------------------------------------
