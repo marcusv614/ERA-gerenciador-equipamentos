@@ -1,4 +1,6 @@
-import logoEra from '../assets/ERALTDA.png';
+// Incorporar o logo evita que a janela isolada de impressão perca o caminho do
+// arquivo gerado pelo Vite antes de o navegador montar o PDF.
+import logoEra from '../assets/ERALTDA.png?inline';
 import { formatarData } from '../utils/datas';
 
 const ESTILOS_DOCUMENTO = `
