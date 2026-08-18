@@ -1,13 +1,19 @@
-import { useState } from 'react';
-import { ModalShell } from '../modal-shell/ModalShell';
-import { Field } from '../field/Field';
-import { statusList, tecnicosCadastrados } from '../../data/mockData';
-import styles from './MoverEquipModal.module.css';
+import { useState } from "react";
+import { ModalShell } from "../modal-shell/ModalShell";
+import { Field } from "../field/Field";
+import { statusList, tecnicosCadastrados } from "../../data/mockData";
+import styles from "./MoverEquipModal.module.css";
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 export function MoverEquipModal({ equip, obras, onClose, onSave }) {
-  const [obraId, setObraId] = useState(equip.obraId || '');
+  const [obraId, setObraId] = useState(equip.obraId || "");
   const [status, setStatus] = useState(equip.status);
-  const [tecnico, setTecnico] = useState(equip.tecnico || '');
+  const [tecnico, setTecnico] = useState(equip.tecnico || "");
+  const [dataMovimentacao, setDataMovimentacao] = useState(todayStr());
 
   return (
     <ModalShell
@@ -29,6 +35,15 @@ export function MoverEquipModal({ equip, obras, onClose, onSave }) {
           </select>
         </Field>
 
+        <Field label="Data de movimentação">
+          <input
+            type="date"
+            className={styles.input}
+            value={dataMovimentacao}
+            onChange={(e) => setDataMovimentacao(e.target.value)}
+          />
+        </Field>
+
         <Field label="Status">
           <div className={styles.statusWrap}>
             {statusList.map((s) => (
@@ -36,7 +51,7 @@ export function MoverEquipModal({ equip, obras, onClose, onSave }) {
                 key={s}
                 type="button"
                 onClick={() => setStatus(s)}
-                className={`${styles.statusBtn} ${status === s ? styles.statusBtnActive : ''}`}
+                className={`${styles.statusBtn} ${status === s ? styles.statusBtnActive : ""}`}
               >
                 {s}
               </button>
@@ -61,7 +76,12 @@ export function MoverEquipModal({ equip, obras, onClose, onSave }) {
           <button onClick={onClose} className={styles.cancel}>Cancelar</button>
           <button
             onClick={() =>
-              onSave(equip.id, { obraId: obraId || null, status, tecnico: tecnico || null })
+              onSave(equip.id, {
+                obraId: obraId || null,
+                status,
+                tecnico: tecnico || null,
+                dataMovimentacao,
+              })
             }
             className={styles.submit}
           >

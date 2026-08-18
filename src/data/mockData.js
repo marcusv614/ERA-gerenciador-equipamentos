@@ -22,16 +22,34 @@ export const initialObras = [
 // ---------------------------------------------------------------------------
 export const initialEquip = [
   // OTDR
-  { id: 'e1', tipo: 'OTDR', modelo: 'EXFO FTB-1v2', serie: 'FTB-88213', status: 'Em campo', obraId: 'o1', tecnico: 'Diego Farias', saida: '2026-05-22' },
+  {
+    id: 'e1', tipo: 'OTDR', modelo: 'EXFO FTB-1v2', serie: 'FTB-88213',
+    status: 'Em campo', obraId: 'o1', tecnico: 'Diego Farias',
+    saida: '2026-05-22', data: '2026-05-22', dataEntrada: '2026-05-22', dataSaida: '2026-05-22',
+    historico: [
+      {
+        id: 'h1a',
+        dataMovimentacao: '2026-05-22',
+        dataSaida: '2026-05-22',
+        dataEntrada: '2026-05-22',
+        origemObraId: null,
+        destinoObraId: 'o1',
+        origemNome: 'Depósito central',
+        destinoNome: 'Expansão FTTH — Zona Norte',
+        tecnico: 'Diego Farias',
+        status: 'Em campo',
+      },
+    ],
+  },
   { id: 'e2', tipo: 'OTDR', modelo: 'Viavi SmartOTDR 6000', serie: 'VVX-40217', status: 'Em manutenção', obraId: null, tecnico: null },
-  { id: 'e15', tipo: 'OTDR', modelo: 'EXFO FTB-1v2', serie: 'OTF-88215', status: 'Em campo', obraId: 'o5', tecnico: 'Amanda Castro', saida: '2026-06-19' },
-  { id: 'e16', tipo: 'OTDR', modelo: 'Viavi SmartOTDR 6000', serie: 'VVX-40219', status: 'Em trânsito', obraId: 'o3', tecnico: 'Bruno Alencar', saida: '2026-06-21' },
-  { id: 'e17', tipo: 'OTDR', modelo: 'Anritsu MT9090A', serie: 'MT-4410', status: 'Em campo', obraId: 'o7', tecnico: 'Rafael Torres', saida: '2026-06-23' },
+  { id: 'e15', tipo: 'OTDR', modelo: 'EXFO FTB-1v2', serie: 'OTF-88215', status: 'Em campo', obraId: 'o5', tecnico: 'Amanda Castro', saida: '2026-06-19', data: '2026-06-19', dataEntrada: '2026-06-19', dataSaida: '2026-06-19' },
+  { id: 'e16', tipo: 'OTDR', modelo: 'Viavi SmartOTDR 6000', serie: 'VVX-40219', status: 'Em trânsito', obraId: 'o3', tecnico: 'Bruno Alencar', saida: '2026-06-21', data: '2026-06-21', dataEntrada: '2026-06-21', dataSaida: '2026-06-21' },
+  { id: 'e17', tipo: 'OTDR', modelo: 'Anritsu MT9090A', serie: 'MT-4410', status: 'Em campo', obraId: 'o7', tecnico: 'Rafael Torres', saida: '2026-06-23', data: '2026-06-23', dataEntrada: '2026-06-23', dataSaida: '2026-06-23' },
   { id: 'e18', tipo: 'OTDR', modelo: 'EXFO FTB-400 UTS', serie: 'UTS-6012', status: 'Em estoque', obraId: null, tecnico: null },
-  { id: 'e19', tipo: 'OTDR', modelo: 'AFL FlexTester AXS-200', serie: 'AFL-90043', status: 'Em campo', obraId: 'o6', tecnico: 'Marcos Vinícius', saida: '2026-06-27' },
+  { id: 'e19', tipo: 'OTDR', modelo: 'AFL FlexTester AXS-200', serie: 'AFL-90043', status: 'Em campo', obraId: 'o6', tecnico: 'Marcos Vinícius', saida: '2026-06-27', data: '2026-06-27', dataEntrada: '2026-06-27', dataSaida: '2026-06-27' },
   { id: 'e20', tipo: 'OTDR', modelo: 'Tektronix TFP2', serie: 'TPK-7741', status: 'Em manutenção', obraId: null, tecnico: null },
   { id: 'e34', tipo: 'OTDR', modelo: 'Keysight NFA100', serie: 'KEY-99103', status: 'Em estoque', obraId: null, tecnico: null },
-  { id: 'e35', tipo: 'OTDR', modelo: 'Viavi MTS-2000', serie: 'MTS-77812', status: 'Em trânsito', obraId: 'o8', tecnico: 'Diego Farias', saida: '2026-07-29' },
+  { id: 'e35', tipo: 'OTDR', modelo: 'Viavi MTS-2000', serie: 'MTS-77812', status: 'Em trânsito', obraId: 'o8', tecnico: 'Diego Farias', saida: '2026-07-29', data: '2026-07-29', dataEntrada: '2026-07-29', dataSaida: '2026-07-29' },
 // Fluke
   { id: 'e5', tipo: 'Fluke', modelo: 'Fluke DSX2-5000', serie: 'FLK-51092', status: 'Em campo', obraId: 'o1', tecnico: 'Diego Farias', saida: '2026-05-30' },
   { id: 'e6', tipo: 'Fluke', modelo: 'Fluke Networks CertiFiber Pro', serie: 'FLK-33871', status: 'Em campo', obraId: 'o4', tecnico: 'Fernanda Lima', saida: '2026-06-01' },

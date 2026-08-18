@@ -127,29 +127,84 @@ export function FibraTrack() {
     setShowNovoEquip(false);
   }
 
+  function todayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }
+
   function handleMoveEquip(id, updates) {
     setEquipamentos((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, ...updates } : e)),
+      prev.map((e) => {
+        if (e.id !== id) return e;
+
+        const oldObraId = e.obraId ?? null;
+        const newObraId = updates.obraId ?? null;
+        const dataMov = updates.dataMovimentacao || todayStr();
+        const historico = Array.isArray(e.historico) ? [...e.historico] : [];
+
+        const origemNome = oldObraId
+          ? (obraById(oldObraId) || {}).nome
+          : "Depósito central";
+        const destinoNome = newObraId
+          ? (obraById(newObraId) || {}).nome
+          : "Depósito central";
+
+        historico.push({
+          id: "h" + Date.now() + "_" + historico.length,
+          dataMovimentacao: dataMov,
+          dataSaida: dataMov,
+          dataEntrada: dataMov,
+          origemObraId: oldObraId,
+          destinoObraId: newObraId,
+          origemNome,
+          destinoNome,
+          tecnico: updates.tecnico || e.tecnico || null,
+          status: updates.status || e.status,
+        });
+
+        return {
+          ...e,
+          ...updates,
+          obraId: newObraId,
+          data: dataMov, // data de entrada na nova localização
+          saida: dataMov, // data de saída da localização anterior
+          dataSaida: dataMov,
+          dataEntrada: dataMov,
+          historico,
+        };
+      }),
     );
     setMoverEquip(null);
   }
 
-  // Retorna um histórico (mock) para o equipamento quando não houver um campo `historico`.
+  // Retorna o histórico de movimentação do equipamento.
+  // Cada entrada contém: dataMovimentacao, dataSaida, dataEntrada, origem, destino, técnico e status.
   function getHistorico(equip) {
     if (Array.isArray(equip.historico) && equip.historico.length > 0)
       return equip.historico;
     const list = [];
     if (equip.saida)
       list.push({
-        date: equip.saida,
+        dataMovimentacao: equip.saida,
+        dataSaida: equip.saida,
+        dataEntrada: equip.dataEntrada || equip.data || equip.saida,
+        origemObraId: null,
+        destinoObraId: equip.obraId || null,
+        origemNome: "Depósito central",
+        destinoNome: equip.obraId
+          ? (obraById(equip.obraId) || {}).nome
+          : "Depósito central",
         tecnico: equip.tecnico || "—",
-        obraId: equip.obraId || null,
+        status: equip.status,
       });
     // histórico de aquisição / entrada
     list.push({
-      date: "2025-01-15",
+      dataMovimentacao: "2025-01-15",
+      dataEntrada: "2025-01-15",
+      origemNome: null,
+      destinoNome: "Depósito central",
       tecnico: null,
-      obraId: null,
+      status: "Em estoque",
       note: "Entrada no sistema",
     });
     return list;
@@ -215,21 +270,46 @@ export function FibraTrack() {
     }, 1500);
   }
 
-  // Exporta histórico simples abrindo uma nova janela pronta para impressão (usuário pode salvar em PDF)
+  // Exporta histórico completo de movimentação abrindo uma nova janela pronta para impressão (usuário pode salvar em PDF)
   function exportHistoryPdf(equip) {
     const historico = getHistorico(equip);
-    const obraName = (id) =>
-      id ? (obraById(id) || {}).nome : "Depósito central";
     const html = `
       <h1>Histórico de movimentação — ${equip.modelo} · ${equip.serie}</h1>
-      <table><thead><tr><th>Data</th><th>Técnico</th><th>Obra</th></tr></thead><tbody>
-      ${historico
-        .map(
-          (h) =>
-            `<tr><td>${formatDate(h.date || h.saida || h.when)}</td><td>${h.tecnico || "—"}</td><td>${obraName(h.obraId)}</td></tr>`,
-        )
-        .join("")}
-      </tbody></table>
+      <table>
+        <thead>
+          <tr>
+            <th>Data movimentação</th>
+            <th>Origem</th>
+            <th>Destino</th>
+            <th>Data saída</th>
+            <th>Data entrada</th>
+            <th>Técnico</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+        ${historico
+          .map((h) => {
+            const dataMov = h.dataMovimentacao || h.date || h.saida || h.when;
+            const origem = h.origemNome || "Depósito central";
+            const destino =
+              h.destinoNome ||
+              (h.obraId ? (obraById(h.obraId) || {}).nome : "Depósito central");
+            const dataSaida = h.dataSaida || h.dataMovimentacao || h.saida || "—";
+            const dataEntrada = h.dataEntrada || h.data || h.dataMovimentacao || "—";
+            return `<tr>
+              <td>${formatDate(dataMov)}</td>
+              <td>${origem}</td>
+              <td>${destino}</td>
+              <td>${formatDate(dataSaida)}</td>
+              <td>${formatDate(dataEntrada)}</td>
+              <td>${h.tecnico || "—"}</td>
+              <td>${h.status || "—"}</td>
+            </tr>`;
+          })
+          .join("")}
+        </tbody>
+      </table>
       <p class="muted">Gerado em ${formatDate(new Date())}</p>`;
 
     openPrintableWindow(`Histórico ${equip.modelo}`, html);
@@ -243,7 +323,8 @@ export function FibraTrack() {
     const rows = listaAtual.length
       ? listaAtual
           .map((e) => {
-            const entrada = e.data || e.saida || "—";
+            // Data de entrada = data de movimentação registrada ao entrar na obra
+            const entrada = e.data || e.dataEntrada || e.saida || "—";
             return `
                 <tr>
                   <td>${e.tipo}</td>
@@ -308,26 +389,54 @@ export function FibraTrack() {
   }
 
   function exportObraHistoricoPdf(obra) {
-    const historico = equipamentos.filter((e) => e.obraId === obra.id);
+    // Equipamentos que estão na obra agora
+    const atuais = equipamentos.filter((e) => e.obraId === obra.id);
+    // Equipamentos que passaram pela obra (registrados no historico de movimentação)
+    const passaram = equipamentos.filter((e) =>
+      Array.isArray(e.historico) &&
+      e.historico.some(
+        (h) => h.destinoObraId === obra.id || h.origemObraId === obra.id,
+      ),
+    );
+    const todos = [
+      ...new Map([...atuais, ...passaram].map((e) => [e.id, e])).values(),
+    ];
 
-    const rows = historico.length
-      ? historico
+    const rows = todos.length
+      ? todos
           .map((e) => {
-            const entrada = e.data || e.saida || "—";
-            const saida = e.saida || "—";
+            // Data de entrada: usa a última movimentação para esta obra
+            let entrada = e.data || e.dataEntrada || "—";
+            let saida = "—";
+            if (Array.isArray(e.historico)) {
+              const passagens = e.historico.filter(
+                (h) =>
+                  h.destinoObraId === obra.id || h.origemObraId === obra.id,
+              );
+              if (passagens.length > 0) {
+                const ultima = passagens[passagens.length - 1];
+                entrada = ultima.dataEntrada || ultima.dataMovimentacao || entrada;
+                saida = ultima.dataSaida || ultima.dataMovimentacao || "—";
+              }
+            } else {
+              saida = e.saida || "—";
+            }
             return `
               <tr>
                 <td>${e.tipo}</td>
                 <td>${e.modelo}</td>
                 <td>${e.serie}</td>
                 <td>${e.tecnico || "—"}</td>
-                <td>${entrada ? formatDate(entrada) : "—"}</td>
-                <td>${saida ? formatDate(saida) : "—"}</td>
+                <td>${formatDate(entrada)}</td>
+                <td>${formatDate(saida)}</td>
               </tr>`;
           })
           .join("")
       : '<tr><td colspan="6">Nenhum histórico de equipamentos registrado para esta obra.</td></tr>';
 
+    const tecnicosList = [
+      ...new Set(todos.map((e) => e.tecnico).filter(Boolean)),
+    ];
     const body = `
       <div class="doc-card">
         <div class="doc-top">
@@ -340,7 +449,7 @@ export function FibraTrack() {
           <div class="header-row"><span class="label">Cliente</span><span class="value">${obra.cliente}</span></div>
           <div class="header-row"><span class="label">Localização</span><span class="value">${obra.cidade}</span></div>
           <div class="header-row"><span class="label">Responsável técnico</span><span class="value">${obra.responsavel || "—"}</span></div>
-          <div class="header-row"><span class="label">Técnicos na obra</span><span class="value">${historico.some((e) => e.tecnico) ? [...new Set(historico.map((e) => e.tecnico).filter(Boolean))].join(", ") : "—"}</span></div>
+          <div class="header-row"><span class="label">Técnicos na obra</span><span class="value">${tecnicosList.length ? tecnicosList.join(", ") : "—"}</span></div>
         </div>
       </div>
       <h2>Equipamentos que passaram pela obra</h2>
@@ -847,11 +956,28 @@ export function FibraTrack() {
                   {historico.map((h, i) => (
                     <div key={i} className={styles.histRow}>
                       <div className={styles.histDate}>
-                        {formatDate(h.date || h.saida || h.when)}
+                        {formatDate(h.dataMovimentacao || h.date || h.saida || h.when)}
                       </div>
-                      <div className={styles.histText}>{h.tecnico || "—"}</div>
+                      <div className={styles.histText}>
+                        <div className={styles.histMove}>
+                          <span className={styles.histOrigin}>
+                            {h.origemNome || "Depósito central"}
+                          </span>
+                          <span className={styles.histArrow}>→</span>
+                          <span className={styles.histDestiny}>
+                            {h.destinoNome ||
+                              (h.obraId ? obraName(h.obraId) : "Depósito central")}
+                          </span>
+                        </div>
+                        <div className={styles.histDates}>
+                          Saída: {formatDate(h.dataSaida || h.dataMovimentacao || h.saida || "—")}
+                          {" · "}
+                          Entrada: {formatDate(h.dataEntrada || h.data || h.dataMovimentacao || "—")}
+                        </div>
+                      </div>
                       <div className={styles.histObra}>
-                        {obraName(h.obraId)}
+                        <div className={styles.histTecnico}>{h.tecnico || "—"}</div>
+                        <div className={styles.histStatus}>{h.status || "—"}</div>
                       </div>
                     </div>
                   ))}
