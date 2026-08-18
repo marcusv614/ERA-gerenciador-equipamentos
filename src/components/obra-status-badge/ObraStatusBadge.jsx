@@ -6,7 +6,7 @@ const STATUS_CLASS = {
   'Concluída': styles.concluida,
 };
 
-export function ObraStatusBadge({ status }) {
+export function IndicadorStatusObra({ status }) {
   const cls = STATUS_CLASS[status] || styles.planejada;
   return (
     <span className={`${styles.badge} ${cls}`}>{status}</span>

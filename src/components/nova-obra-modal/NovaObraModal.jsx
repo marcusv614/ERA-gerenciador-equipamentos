@@ -1,19 +1,20 @@
 import { useState } from 'react';
-import { ModalShell } from '../modal-shell/ModalShell';
-import { Field } from '../field/Field';
-import { obraStatusList, tecnicosCadastrados } from '../../data/mockData';
+import { EstruturaModal } from '../modal-shell/ModalShell';
+import { CampoFormulario } from '../field/Field';
+import { statusObra } from '../../data/mockData';
+import { obterDataAtual } from '../../utils/datas';
 import styles from './NovaObraModal.module.css';
 
-export function NovaObraModal({ onClose, onSave }) {
+export function ModalNovaObra({ tecnicosCadastrados, aoFechar, aoSalvar }) {
   const [form, setForm] = useState({
     nome: '', cliente: '', cidade: '', responsavel: '', inicio: '', status: 'Planejada',
   });
-  const canSave = form.nome.trim() && form.cliente.trim() && form.cidade.trim();
+  const canSave = form.nome.trim() && form.cliente.trim() && form.cidade.trim() && form.responsavel.trim();
 
   return (
-    <ModalShell title="Nova obra" subtitle="Cadastre uma nova frente de trabalho" onClose={onClose}>
+    <EstruturaModal titulo="Nova obra" subtitulo="Cadastre uma nova frente de trabalho" aoFechar={aoFechar}>
       <div className={styles.form}>
-        <Field label="Nome da obra">
+        <CampoFormulario rotulo="Nome da obra">
           <input
             autoFocus
             className={styles.input}
@@ -21,53 +22,51 @@ export function NovaObraModal({ onClose, onSave }) {
             value={form.nome}
             onChange={(e) => setForm({ ...form, nome: e.target.value })}
           />
-        </Field>
+        </CampoFormulario>
 
         <div className={styles.grid2}>
-          <Field label="Cliente">
+          <CampoFormulario rotulo="Cliente">
             <input
               className={styles.input}
               placeholder="Ex.: Claro"
               value={form.cliente}
               onChange={(e) => setForm({ ...form, cliente: e.target.value })}
             />
-          </Field>
-          <Field label="Cidade / UF">
+          </CampoFormulario>
+          <CampoFormulario rotulo="Cidade / UF">
             <input
               className={styles.input}
               placeholder="Ex.: Manaus, AM"
               value={form.cidade}
               onChange={(e) => setForm({ ...form, cidade: e.target.value })}
             />
-          </Field>
+          </CampoFormulario>
         </div>
 
         <div className={styles.grid2}>
-          <Field label="Responsável">
-            <select
+          <CampoFormulario rotulo="Responsável">
+            <input
               className={styles.input}
               value={form.responsavel}
               onChange={(e) => setForm({ ...form, responsavel: e.target.value })}
-            >
-              <option value="">Selecione</option>
-              {tecnicosCadastrados.map((nome) => (
-                <option key={nome} value={nome}>{nome}</option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Data de início">
+              list="tecnicos-nova-obra"
+              placeholder="Selecione ou informe um nome"
+            />
+            <datalist id="tecnicos-nova-obra">{tecnicosCadastrados.map((nome) => <option key={nome} value={nome} />)}</datalist>
+          </CampoFormulario>
+          <CampoFormulario rotulo="Data de início">
             <input
               type="date"
               className={styles.input}
               value={form.inicio}
               onChange={(e) => setForm({ ...form, inicio: e.target.value })}
             />
-          </Field>
+          </CampoFormulario>
         </div>
 
-        <Field label="Status inicial">
+        <CampoFormulario rotulo="Status inicial">
           <div className={styles.statusRow}>
-            {obraStatusList.map((s) => (
+            {statusObra.map((s) => (
               <button
                 key={s}
                 type="button"
@@ -78,14 +77,14 @@ export function NovaObraModal({ onClose, onSave }) {
               </button>
             ))}
           </div>
-        </Field>
+        </CampoFormulario>
 
         <div className={styles.actions}>
-          <button onClick={onClose} className={styles.cancel}>Cancelar</button>
+          <button onClick={aoFechar} className={styles.cancel}>Cancelar</button>
           <button
             disabled={!canSave}
             onClick={() =>
-              onSave({ ...form, inicio: form.inicio || new Date().toISOString().slice(0, 10) })
+              aoSalvar({ ...form, inicio: form.inicio || obterDataAtual() })
             }
             className={styles.submit}
           >
@@ -93,6 +92,6 @@ export function NovaObraModal({ onClose, onSave }) {
           </button>
         </div>
       </div>
-    </ModalShell>
+    </EstruturaModal>
   );
 }

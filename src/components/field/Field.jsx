@@ -1,9 +1,9 @@
 import styles from './Field.module.css';
 
-export function Field({ label, children }) {
+export function CampoFormulario({ rotulo, children }) {
   return (
     <label className={styles.field}>
-      <span className={styles.label}>{label}</span>
+      <span className={styles.label}>{rotulo}</span>
       {children}
     </label>
   );

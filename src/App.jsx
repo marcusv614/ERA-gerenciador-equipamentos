@@ -1,7 +1,7 @@
-import { FibraTrack } from './components/fibra-track/FibraTrack';
+import { PainelControleAtivos } from './components/painel/PainelControleAtivos';
 
 function App() {
-  return <FibraTrack />;
+  return <PainelControleAtivos />;
 }
 
 export default App;

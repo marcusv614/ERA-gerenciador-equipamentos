@@ -8,7 +8,7 @@ const STATUS_CLASS = {
   'Em trânsito': styles.transito,
 };
 
-export function StatusBadge({ status }) {
+export function IndicadorStatus({ status }) {
   const cls = STATUS_CLASS[status] || styles.campo;
   return (
     <span className={`${styles.badge} ${cls}`}>

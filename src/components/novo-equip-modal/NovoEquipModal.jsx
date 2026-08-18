@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { ModalShell } from "../modal-shell/ModalShell";
-import { Field } from "../field/Field";
-import { tecnicosCadastrados, tipos, tipoIcon } from '../../data/mockData';
+import { EstruturaModal } from "../modal-shell/ModalShell";
+import { CampoFormulario } from "../field/Field";
+import { tiposEquipamento, iconePorTipoEquipamento } from '../../data/mockData';
 import styles from "./NovoEquipModal.module.css";
 
-export function NovoEquipModal({ obras, onClose, onSave }) {
+export function ModalNovoEquipamento({ obras, tecnicosCadastrados, seriesCadastradas, aoFechar, aoSalvar }) {
   const [form, setForm] = useState({
     tipo: "OTDR",
     modelo: "",
@@ -14,19 +14,23 @@ export function NovoEquipModal({ obras, onClose, onSave }) {
     tecnico: "",
     data: "",
   });
-  const canSave = form.modelo.trim() && form.serie.trim();
+  const serieNormalizada = form.serie.trim().toLocaleLowerCase('pt-BR');
+  const serieJaCadastrada = seriesCadastradas.some((serie) =>
+    serie.trim().toLocaleLowerCase('pt-BR') === serieNormalizada);
+  const canSave = form.modelo.trim() && serieNormalizada && !serieJaCadastrada &&
+    (!form.obraId || form.tecnico.trim());
 
   return (
-    <ModalShell
-      title="Novo equipamento"
-      subtitle="Cadastre um instrumento na frota"
-      onClose={onClose}
+    <EstruturaModal
+      titulo="Novo equipamento"
+      subtitulo="Cadastre um instrumento na frota"
+      aoFechar={aoFechar}
     >
       <div className={styles.form}>
-        <Field label="Tipo">
+        <CampoFormulario rotulo="Tipo">
           <div className={styles.typeRow}>
-            {tipos.map((t) => {
-              const Icon = tipoIcon[t];
+            {tiposEquipamento.map((t) => {
+              const Icon = iconePorTipoEquipamento[t];
               return (
                 <button
                   key={t}
@@ -40,28 +44,28 @@ export function NovoEquipModal({ obras, onClose, onSave }) {
               );
             })}
           </div>
-        </Field>
-
-        <Field label="Modelo">
+        </CampoFormulario>
+        <CampoFormulario rotulo="Modelo">
           <input
             className={styles.input}
             placeholder="Ex.: EXFO FTB-1v2"
             value={form.modelo}
             onChange={(e) => setForm({ ...form, modelo: e.target.value })}
           />
-        </Field>
+        </CampoFormulario>
+        {serieJaCadastrada && <p role="alert">Já existe um equipamento com este número de série.</p>}
 
-        <Field label="Número de série">
+        <CampoFormulario rotulo="Número de série">
           <input
             className={`${styles.input} ${styles.mono}`}
             placeholder="Ex.: FTB-88213"
             value={form.serie}
             onChange={(e) => setForm({ ...form, serie: e.target.value })}
           />
-        </Field>
+        </CampoFormulario>
 
         <div className={styles.grid2}>
-          <Field label="Localização">
+          <CampoFormulario rotulo="Localização">
             <select
               className={styles.input}
               value={form.obraId}
@@ -70,48 +74,49 @@ export function NovoEquipModal({ obras, onClose, onSave }) {
                   ...form,
                   obraId: e.target.value,
                   status: e.target.value ? "Em campo" : "Em estoque",
+                  tecnico: e.target.value ? form.tecnico : '',
                 })
               }
             >
               <option value="">Depósito central</option>
-              {obras.map((o) => (
+              {obras.filter(({ status }) => status !== 'Concluída').map((o) => (
                 <option key={o.id} value={o.id}>
                   {o.nome}
                 </option>
               ))}
             </select>
-          </Field>
-          <Field label="Técnico responsável">
-            <select
+          </CampoFormulario>
+          <CampoFormulario rotulo="Técnico responsável">
+            <input
               className={styles.input}
               value={form.tecnico}
               onChange={(e) => setForm({ ...form, tecnico: e.target.value })}
-            >
-              <option value="">Selecione</option>
-              {tecnicosCadastrados.map((nome) => (
-                <option key={nome} value={nome}>{nome}</option>
-              ))}
-            </select>
-          </Field>
+              list="tecnicos-novo-equipamento"
+              placeholder="Selecione ou informe um nome"
+              disabled={!form.obraId}
+            />
+            <datalist id="tecnicos-novo-equipamento">{tecnicosCadastrados.map((nome) => <option key={nome} value={nome} />)}</datalist>
+          </CampoFormulario>
         </div>
 
-        <Field label="Data de entrada (opcional)">
+        <CampoFormulario rotulo="Data de entrada (opcional)">
           <input
             type="date"
             className={styles.input}
             value={form.data}
+            max={new Date().toLocaleDateString('sv-SE')}
             onChange={(e) => setForm({ ...form, data: e.target.value })}
           />
-        </Field>
+        </CampoFormulario>
 
         <div className={styles.actions}>
-          <button onClick={onClose} className={styles.cancel}>
+          <button onClick={aoFechar} className={styles.cancel}>
             Cancelar
           </button>
           <button
             disabled={!canSave}
             onClick={() =>
-              onSave({
+              aoSalvar({
                 ...form,
                 obraId: form.obraId || null,
                 tecnico: form.tecnico || null,
@@ -124,6 +129,6 @@ export function NovoEquipModal({ obras, onClose, onSave }) {
           </button>
         </div>
       </div>
-    </ModalShell>
+    </EstruturaModal>
   );
 }

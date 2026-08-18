@@ -1,4 +1,5 @@
 .root {
+  position: relative;
   width: 100%;
   height: 100vh;
   height: 100dvh;
@@ -116,11 +117,6 @@
   color: var(--text);
 }
 
-.navItemDashboard {
-  background: var(--accent-dim);
-  color: var(--accent);
-}
-
 .navSub {
   margin-left: 24px;
   display: flex;
@@ -203,56 +199,79 @@
 }
 
 .topbar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px 24px;
   flex-shrink: 0;
   border-bottom: 1px solid var(--border);
+  transition: padding 0.18s ease;
+}
+
+.sidebarEdgeToggle:not(.sidebarEdgeToggleOpen) + .main .topbar {
+  padding-left: 64px;
 }
 
 .topbar > div:not(.topbarRight) {
   min-width: 0;
 }
 
-.toggleBtn {
-  width: 34px;
-  height: 34px;
+.sidebarEdgeToggle {
+  position: fixed;
+  top: 18px;
+  left: 12px;
+  z-index: 60;
+  width: 38px;
+  height: 38px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  border-radius: 9999px;
+  border-radius: 11px;
   color: var(--text-muted);
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(47, 47, 47, 0.14);
+  backdrop-filter: blur(10px);
   cursor: pointer;
   transition:
+    left 0.18s ease,
+    transform 0.15s ease,
     color 0.15s ease,
     border-color 0.15s ease,
     background 0.15s ease;
 }
-.toggleBtn:hover {
+.sidebarEdgeToggleOpen {
+  left: 224px;
+}
+.sidebarEdgeToggle:hover {
   color: var(--accent);
   border-color: rgba(var(--era-orange-rgb), 0.48);
   background: var(--surface-2);
+  transform: translateY(-1px);
 }
 
 /* Botão de retrair/expandir topbar — visível apenas no mobile */
 .topbarCollapseBtn {
   display: none;
-  width: 34px;
-  height: 34px;
+  position: absolute;
+  left: 50%;
+  bottom: -11px;
+  z-index: 5;
+  width: 46px;
+  height: 22px;
   padding: 0;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  border-radius: 9999px;
+  border-radius: 0 0 12px 12px;
   color: var(--text-muted);
   background: var(--surface);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border);
+  border-top: none;
+  box-shadow: 0 5px 12px rgba(47, 47, 47, 0.1);
   cursor: pointer;
+  transform: translateX(-50%);
   transition:
     color 0.15s ease,
     border-color 0.15s ease,
@@ -505,17 +524,27 @@
 
 .equipHead {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 12px;
 }
 
+button.equipCard {
+  width: 100%;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .equipIdent {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   min-width: 0;
+  flex: 1 1 190px;
 }
 
 .equipIconBox {
@@ -551,17 +580,17 @@
 
 .equipTitleWrap {
   min-width: 0;
+  flex: 1;
 }
 
 .equipModel {
   font-size: 14px;
-  font-weight: 500;
-  line-height: 1.3;
-  /* mostrar descrição completa em múltiplas linhas */
+  font-weight: 600;
+  line-height: 1.4;
   overflow: visible;
   text-overflow: unset;
   white-space: normal;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .equipSerie {
@@ -642,6 +671,15 @@
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.equipHeadActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  gap: 8px;
+  margin-left: auto;
 }
 
 .iconBtn {
@@ -1201,17 +1239,19 @@
 
   .topbarCollapseBtn {
     display: inline-flex;
-    margin-left: auto;
   }
 
   .topbarCollapsed {
     padding: 8px 16px;
   }
 
-  .topbarCollapsed .toggleBtn,
   .topbarCollapsed > div:not(.topbarRight),
   .topbarCollapsed .topbarRight {
     display: none;
+  }
+
+  .sidebarEdgeToggleOpen {
+    left: calc(min(82vw, 292px) - 19px);
   }
 
   .topbarRight {

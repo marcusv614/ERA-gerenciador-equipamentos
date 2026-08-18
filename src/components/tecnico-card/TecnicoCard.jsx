@@ -1,10 +1,11 @@
 import { PackageSearch } from 'lucide-react';
-import { StatusBadge } from '../status-badge/StatusBadge';
-import { ObraStatusBadge } from '../obra-status-badge/ObraStatusBadge';
-import { formatDate } from '../../utils/formatDate';
+import { IndicadorStatus } from '../status-badge/StatusBadge';
+import { IndicadorStatusObra } from '../obra-status-badge/ObraStatusBadge';
+import { formatarData } from '../../utils/datas';
 import styles from './TecnicoCard.module.css';
 
-export function TecnicoCard({ nome, obras, equipamentos, allObras }) {
+export function CartaoTecnico({ funcionario, obras, equipamentos, todasAsObras }) {
+  const { nome, cargo, email, telefone, status } = funcionario;
   const initials = nome
     .split(' ')
     .filter(Boolean)
@@ -13,7 +14,7 @@ export function TecnicoCard({ nome, obras, equipamentos, allObras }) {
     .join('')
     .toUpperCase();
 
-  const obraDoEquip = (obraId) => (obraId ? allObras.find((o) => o.id === obraId) : null);
+  const buscarObraDoEquipamento = (obraId) => (obraId ? todasAsObras.find((obra) => obra.id === obraId) : null);
 
   return (
     <div className={styles.card}>
@@ -21,6 +22,8 @@ export function TecnicoCard({ nome, obras, equipamentos, allObras }) {
         <div className={styles.avatar}>{initials}</div>
         <div className={styles.headerInfo}>
           <div className={styles.name}>{nome}</div>
+          <div className={styles.rowData}>{cargo} · {status}</div>
+          <div className={styles.rowData}>{email} · {telefone}</div>
           <div className={styles.meta}>
             <span className={styles.pill}>
               {obras.length} {obras.length === 1 ? 'obra' : 'obras'}
@@ -39,7 +42,7 @@ export function TecnicoCard({ nome, obras, equipamentos, allObras }) {
             {obras.map((o) => (
               <div key={o.id} className={styles.obraRow}>
                 <span className={styles.obraNome}>{o.nome}</span>
-                <ObraStatusBadge status={o.status} />
+                <IndicadorStatusObra status={o.status} />
               </div>
             ))}
           </div>
@@ -61,7 +64,7 @@ export function TecnicoCard({ nome, obras, equipamentos, allObras }) {
                 <span>Retirada</span>
               </div>
               {equipamentos.map((e) => {
-                const obra = obraDoEquip(e.obraId);
+                const obra = buscarObraDoEquipamento(e.obraId);
                 return (
                   <div key={e.id} className={styles.row}>
                     <span className={styles.rowModel}>
@@ -70,12 +73,12 @@ export function TecnicoCard({ nome, obras, equipamentos, allObras }) {
                     </span>
                     <span className={styles.rowSerie}>{e.serie}</span>
                     <span>
-                      <StatusBadge status={e.status} />
+                      <IndicadorStatus status={e.status} />
                     </span>
                     <span className={styles.rowLocal}>
                       {obra ? obra.nome : 'Depósito central'}
                     </span>
-                    <span className={styles.rowData}>{(e.saida && formatDate(e.saida)) || '—'}</span>
+                    <span className={styles.rowData}>{(e.saida && formatarData(e.saida)) || '—'}</span>
                   </div>
                 );
               })}

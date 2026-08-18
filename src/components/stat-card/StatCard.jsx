@@ -6,15 +6,15 @@ const ACCENTS = {
   'var(--warn)': styles.warn,
 };
 
-export function StatCard({ label, value, accent }) {
-  const valueClass = accent
-    ? `${styles.value} ${ACCENTS[accent] || styles.accent}`
+export function CartaoResumo({ rotulo, valor, destaque }) {
+  const valueClass = destaque
+    ? `${styles.value} ${ACCENTS[destaque] || styles.accent}`
     : styles.value;
 
   return (
     <div className={styles.card}>
-      <span className={styles.label}>{label}</span>
-      <span className={valueClass}>{value}</span>
+      <span className={styles.label}>{rotulo}</span>
+      <span className={valueClass}>{valor}</span>
     </div>
   );
 }

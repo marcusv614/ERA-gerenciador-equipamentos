@@ -1,16 +1,45 @@
-# React + Vite
+# Controle de Ativos ERA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Painel React para acompanhar equipamentos, obras, técnicos, depósito e movimentações de ativos da ERA Engenharia de Redes da Amazônia.
 
-Currently, two official plugins are available:
+## Executar o projeto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+Validações disponíveis:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm run lint
+npm run build
+```
 
-## Expanding the ESLint configuration
+## Organização
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `src/components/painel`: composição do painel, navegação e telas principais.
+- `src/components`: componentes visuais reutilizáveis e modais de formulário.
+- `src/hooks`: estado e consultas derivadas do domínio.
+- `src/services`: geração dos documentos para impressão/PDF.
+- `src/utils`: datas e regras auxiliares sem dependência da interface.
+- `src/data`: dados simulados e constantes do domínio.
+
+O `PainelControleAtivos` coordena a interface. Regras de cadastro e movimentação ficam em `useControleAtivos`; filtros e buscas ficam em `useFiltrosPainel`. Essa separação mantém os componentes focados em apresentação e facilita a futura conexão com uma API.
+
+## Observação
+
+Atualmente os dados são mantidos apenas no estado do React. Cadastros e movimentações são perdidos ao recarregar a página até que uma API ou camada de persistência seja integrada.
+
+## Integração futura com a API
+
+As entidades atuais são `obras`, `equipamentos`, `funcionarios` e `movimentacoes`. O hook `useControleAtivos` concentra as operações temporárias em memória e é o ponto que deverá ser conectado aos serviços HTTP.
+
+Endpoints esperados para o backend:
+
+- `GET/POST /obras`
+- `GET/POST /equipamentos`
+- `POST /equipamentos/:id/movimentacoes`
+- `GET/POST /funcionarios`
+
+No banco de dados, obras e movimentações devem referenciar funcionários por identificador, não pelo nome. Os nomes ainda são usados nos mocks apenas para manter compatibilidade com a interface atual.
