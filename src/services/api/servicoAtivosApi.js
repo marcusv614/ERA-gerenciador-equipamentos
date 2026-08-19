@@ -9,6 +9,7 @@ const tipoEquipamentoParaInterface = {
   FLUKE: 'Fluke',
   OTDR: 'OTDR',
   MAQUINA_FUSAO: 'Máquina de fusão',
+  ROTULADORA: 'Rotuladora',
 };
 
 const statusEquipamentoParaInterface = {
