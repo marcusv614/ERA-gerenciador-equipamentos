@@ -17,7 +17,11 @@ export function TelaLogin() {
   const enviar = async (evento) => {
     evento.preventDefault(); definirErro(''); definirEnviando(true);
     try { await autenticar({ login, senha }); }
-    catch { definirErro('Login ou senha inválidos. Confira os dados e tente novamente.'); }
+    catch (excecao) {
+      definirErro(excecao.status === 401
+        ? 'Login ou senha inválidos. Confira os dados e tente novamente.'
+        : 'Não foi possível acessar o servidor. Verifique se a API está atualizada e em execução.');
+    }
     finally { definirEnviando(false); }
   };
 
