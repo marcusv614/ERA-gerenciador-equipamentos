@@ -21,7 +21,7 @@ export function TelaAtividades({ solicitacoes, buscarObraPorId, aoAprovar, aoRej
         <div className={estilos.atividadeIcone}><Route size={19} /></div>
         <div className={estilos.atividadeTitulo}>
           <div><h2>{solicitacao.tipo} de material</h2><span className={`${estilos.atividadeStatus} ${estilos[classeStatus]}`}>{solicitacao.status}</span></div>
-          <p>Solicitada por <strong>{solicitacao.tecnico}</strong> em {formatarData(solicitacao.dataSolicitacao)}</p>
+          <p>Solicitada por <strong>{solicitacao.solicitante || solicitacao.tecnico}</strong> em {formatarData(solicitacao.dataSolicitacao)}</p>
         </div>
       </header>
 

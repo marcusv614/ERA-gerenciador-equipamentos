@@ -133,7 +133,7 @@ export const funcionariosIniciais = [
 // substituída pelo endpoint de atividades do painel dos técnicos.
 export const solicitacoesIniciais = [
   {
-    id: 's1', tipo: 'Movimentação', tecnico: 'Diego Farias', obraOrigemId: 'o1', obraDestinoId: 'o8',
+    id: 's1', tipo: 'Movimentação', solicitante: 'Diego Farias', tecnico: 'Diego Farias', obraOrigemId: 'o1', obraDestinoId: 'o8',
     dataSolicitacao: '2026-08-18', status: 'Pendente', observacao: 'Equipamentos necessários para os testes finais do headend.',
     materiais: [
       { id: 'm1', nome: 'Fluke DSX2-5000', quantidade: 1, identificacao: 'FLK-51092' },
@@ -141,7 +141,7 @@ export const solicitacoesIniciais = [
     ],
   },
   {
-    id: 's3', tipo: 'Movimentação', tecnico: 'Marcos Vinícius', obraOrigemId: 'o2', obraDestinoId: 'o6',
+    id: 's3', tipo: 'Movimentação', solicitante: 'Marcos Vinícius', tecnico: 'Marcos Vinícius', obraOrigemId: 'o2', obraDestinoId: 'o6',
     dataSolicitacao: '2026-08-17', status: 'Aprovada', observacao: 'Transferência para continuidade das medições do backbone.',
     materiais: [{ id: 'm6', nome: 'Fluke Networks CertiFiber Pro', quantidade: 1, identificacao: 'FLK-33872' }],
   },

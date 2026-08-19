@@ -67,7 +67,7 @@ export function PainelControleAtivos() {
     ? controleAtivos.solicitacoes.filter((solicitacao) => {
       const origem = solicitacao.obraOrigemId ? controleAtivos.buscarObraPorId(solicitacao.obraOrigemId)?.nome : '';
       const destino = solicitacao.obraDestinoId ? controleAtivos.buscarObraPorId(solicitacao.obraDestinoId)?.nome : '';
-      return [solicitacao.tecnico, solicitacao.tipo, solicitacao.status, origem, destino, ...solicitacao.materiais.map(({ nome, identificacao }) => `${nome} ${identificacao || ''}`)]
+      return [solicitacao.solicitante, solicitacao.tecnico, solicitacao.tipo, solicitacao.status, origem, destino, ...solicitacao.materiais.map(({ nome, identificacao }) => `${nome} ${identificacao || ''}`)]
         .join(' ').toLocaleLowerCase('pt-BR').includes(termoAtividades);
     })
     : controleAtivos.solicitacoes;

@@ -52,6 +52,9 @@ export function useControleAtivos() {
     .sort((primeiroNome, segundoNome) => primeiroNome.localeCompare(segundoNome, 'pt-BR')),
   [funcionarios]);
 
+  const gerenteAtual = useMemo(() => funcionarios.find(({ cargo, status }) =>
+    status === 'Ativo' && cargo.toLocaleLowerCase('pt-BR').includes('gerente'))?.nome || 'Renata Nogueira', [funcionarios]);
+
   async function cadastrarObra(dadosNovaObra) {
     if (apiHabilitada) {
       try {
@@ -131,61 +134,36 @@ export function useControleAtivos() {
   }
 
   async function movimentarEquipamento(identificador, dadosMovimentacao) {
+    const equipamento = equipamentos.find(({ id }) => id === identificador);
+    if (!equipamento) return false;
+
+    const novaSolicitacao = {
+      solicitante: gerenteAtual,
+      tecnico: dadosMovimentacao.tecnico || gerenteAtual,
+      obraOrigemId: equipamento.obraId ?? null,
+      obraDestinoId: dadosMovimentacao.obraId ?? null,
+      dataSolicitacao: dadosMovimentacao.dataMovimentacao || obterDataAtual(),
+      observacao: `Movimentação solicitada pelo gerente. Status desejado: ${dadosMovimentacao.status}.`,
+      materiais: [{ nome: equipamento.modelo, quantidade: 1, identificacao: equipamento.serie }],
+    };
+
     if (apiHabilitada) {
       try {
-        await apiEquipamentos.movimentar(identificador, dadosMovimentacao);
+        const solicitacaoCadastrada = await apiAtividades.cadastrar(novaSolicitacao);
+        definirSolicitacoes((solicitacoesAtuais) => [solicitacaoCadastrada, ...solicitacoesAtuais]);
         definirErroApi(null);
+        return true;
       } catch (erro) {
         definirErroApi(erro.message);
         return false;
       }
     }
-    definirEquipamentos((equipamentosAtuais) =>
-      equipamentosAtuais.map((equipamento) => {
-        if (equipamento.id !== identificador) return equipamento;
-
-        const obraOrigemId = equipamento.obraId ?? null;
-        const statusDestino = dadosMovimentacao.status;
-        const obraDestinoId = ['Em estoque', 'Em manutenção'].includes(statusDestino)
-          ? null
-          : dadosMovimentacao.obraId ?? null;
-        const dataMovimentacao = dadosMovimentacao.dataMovimentacao || obterDataAtual();
-        const historicoAtual = [...obterHistoricoEquipamento(equipamento, buscarObraPorId)];
-        const tecnicoDestino = ['Em estoque', 'Em manutenção'].includes(statusDestino)
-          ? null
-          : dadosMovimentacao.tecnico || equipamento.tecnico || null;
-        const tecnicoMovimentacao = dadosMovimentacao.tecnico || equipamento.tecnico || null;
-
-        historicoAtual.push({
-          id: `h${Date.now()}_${historicoAtual.length}`,
-          dataMovimentacao,
-          dataSaida: dataMovimentacao,
-          dataEntrada: dataMovimentacao,
-          origemObraId: obraOrigemId,
-          destinoObraId: obraDestinoId,
-          origemNome: obraOrigemId
-            ? buscarObraPorId(obraOrigemId)?.nome
-            : 'Depósito central',
-          destinoNome: obraDestinoId
-            ? buscarObraPorId(obraDestinoId)?.nome
-            : 'Depósito central',
-          tecnico: tecnicoMovimentacao,
-          status: statusDestino || equipamento.status,
-        });
-
-        return {
-          ...equipamento,
-          ...dadosMovimentacao,
-          obraId: obraDestinoId,
-          tecnico: tecnicoDestino,
-          data: dataMovimentacao,
-          saida: dataMovimentacao,
-          dataSaida: dataMovimentacao,
-          dataEntrada: dataMovimentacao,
-          historico: historicoAtual,
-        };
-      }),
-    );
+    definirSolicitacoes((solicitacoesAtuais) => [{
+      id: `s${Date.now()}`,
+      tipo: 'Movimentação',
+      status: 'Pendente',
+      ...novaSolicitacao,
+    }, ...solicitacoesAtuais]);
     return true;
   }
 

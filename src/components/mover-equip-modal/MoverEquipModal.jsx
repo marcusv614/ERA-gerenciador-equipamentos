@@ -16,7 +16,7 @@ export function ModalMovimentarEquipamento({ equipamento, obras, tecnicosCadastr
 
   return (
     <EstruturaModal
-      titulo="Mover equipamento"
+      titulo="Solicitar movimentação"
       subtitulo={`${equipamento.modelo} · ${equipamento.serie}`}
       aoFechar={aoFechar}
     >
@@ -90,7 +90,7 @@ export function ModalMovimentarEquipamento({ equipamento, obras, tecnicosCadastr
             }
             className={styles.submit}
           >
-            Confirmar movimentação
+            Enviar solicitação
           </button>
         </div>
       </div>

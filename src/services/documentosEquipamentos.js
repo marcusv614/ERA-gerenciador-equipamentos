@@ -137,7 +137,8 @@ export function imprimirCautelaSolicitacao(solicitacao, buscarObraPorId) {
     <div class="header-row"><span class="label">Tipo</span><span class="value">Movimentação</span></div>
     <div class="header-row"><span class="label">Status</span><span class="value">${textoSeguro(solicitacao.status)}</span></div>
     <div class="header-row"><span class="label">Data da solicitação</span><span class="value">${formatarData(solicitacao.dataSolicitacao)}</span></div>
-    <div class="header-row"><span class="label">Técnico solicitante</span><span class="value">${textoSeguro(solicitacao.tecnico)}</span></div>
+    <div class="header-row"><span class="label">Solicitante</span><span class="value">${textoSeguro(solicitacao.solicitante || solicitacao.tecnico)}</span></div>
+    <div class="header-row"><span class="label">Técnico responsável</span><span class="value">${textoSeguro(solicitacao.tecnico)}</span></div>
     <div class="header-row"><span class="label">Origem</span><span class="value">${textoSeguro(origem)}</span></div>
     <div class="header-row"><span class="label">Destino</span><span class="value">${textoSeguro(destino)}</span></div>
   </div></div>`;
