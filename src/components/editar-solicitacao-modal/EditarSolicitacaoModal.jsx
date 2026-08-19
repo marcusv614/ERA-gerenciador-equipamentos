@@ -24,10 +24,10 @@ export function ModalEditarSolicitacao({ solicitacao, obras, tecnicosCadastrados
   const obrasDisponiveis = obras.filter(({ status }) => status !== 'Concluída');
   const podeSalvar = tecnico && obraDestinoId && textoParaMateriais(materiais).length > 0;
 
-  return <EstruturaModal titulo="Editar solicitação" subtitulo={`${solicitacao.tipo} · ${solicitacao.id.toUpperCase()}`} aoFechar={aoFechar}>
+  return <EstruturaModal titulo="Editar solicitação" subtitulo={`Movimentação · ${String(solicitacao.id).toUpperCase()}`} aoFechar={aoFechar}>
     <div className={styles.formulario}>
       <CampoFormulario rotulo="Técnico solicitante"><select className={styles.campo} value={tecnico} onChange={(evento) => definirTecnico(evento.target.value)}>{tecnicosCadastrados.map((nome) => <option key={nome}>{nome}</option>)}</select></CampoFormulario>
-      {solicitacao.tipo === 'Movimentação' && <CampoFormulario rotulo="Obra de origem"><select className={styles.campo} value={obraOrigemId} onChange={(evento) => definirObraOrigemId(evento.target.value)}><option value="">Depósito central</option>{obrasDisponiveis.map((obra) => <option key={obra.id} value={obra.id}>{obra.nome}</option>)}</select></CampoFormulario>}
+      <CampoFormulario rotulo="Obra de origem"><select className={styles.campo} value={obraOrigemId} onChange={(evento) => definirObraOrigemId(evento.target.value)}><option value="">Depósito central</option>{obrasDisponiveis.map((obra) => <option key={obra.id} value={obra.id}>{obra.nome}</option>)}</select></CampoFormulario>
       <CampoFormulario rotulo="Obra de destino"><select className={styles.campo} value={obraDestinoId} onChange={(evento) => definirObraDestinoId(evento.target.value)}><option value="">Selecione a obra</option>{obrasDisponiveis.map((obra) => <option key={obra.id} value={obra.id}>{obra.nome}</option>)}</select></CampoFormulario>
       <CampoFormulario rotulo="Materiais" dica="Use uma linha por item: quantidade | nome | identificação (opcional)"><textarea className={`${styles.campo} ${styles.materiais}`} value={materiais} onChange={(evento) => definirMateriais(evento.target.value)} /></CampoFormulario>
       <CampoFormulario rotulo="Observação"><textarea className={`${styles.campo} ${styles.observacao}`} value={observacao} onChange={(evento) => definirObservacao(evento.target.value)} /></CampoFormulario>

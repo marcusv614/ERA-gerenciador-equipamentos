@@ -1286,7 +1286,6 @@ button.equipCard {
 .atividadeCard { min-width:0; padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--surface); box-shadow:0 1px 2px rgba(47,47,47,.08); }
 .atividadeCabecalho { display:flex; align-items:flex-start; gap:11px; }
 .atividadeIcone { width:40px; height:40px; flex:0 0 40px; display:flex; align-items:center; justify-content:center; border-radius:10px; color:var(--accent); background:var(--accent-dim); }
-.atividadeIconeAquisicao { color:var(--info); background:rgba(var(--era-yellow-rgb),.18); }
 .atividadeTitulo { min-width:0; flex:1; }
 .atividadeTitulo > div { display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .atividadeTitulo h2 { margin:0; color:var(--text); font:600 14px/1.35 var(--font-display); }

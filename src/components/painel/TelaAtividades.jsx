@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Clock3, FileDown, PackagePlus, Pencil, Route, X } from 'lucide-react';
+import { ArrowRight, Check, Clock3, FileDown, Pencil, Route, X } from 'lucide-react';
 import { formatarData } from '../../utils/datas';
 
 const CONFIGURACAO_STATUS = [
@@ -18,9 +18,7 @@ export function TelaAtividades({ solicitacoes, buscarObraPorId, aoAprovar, aoRej
 
     return <article key={solicitacao.id} className={estilos.atividadeCard}>
       <header className={estilos.atividadeCabecalho}>
-        <div className={`${estilos.atividadeIcone} ${solicitacao.tipo === 'Aquisição' ? estilos.atividadeIconeAquisicao : ''}`}>
-          {solicitacao.tipo === 'Movimentação' ? <Route size={19} /> : <PackagePlus size={19} />}
-        </div>
+        <div className={estilos.atividadeIcone}><Route size={19} /></div>
         <div className={estilos.atividadeTitulo}>
           <div><h2>{solicitacao.tipo} de material</h2><span className={`${estilos.atividadeStatus} ${estilos[classeStatus]}`}>{solicitacao.status}</span></div>
           <p>Solicitada por <strong>{solicitacao.tecnico}</strong> em {formatarData(solicitacao.dataSolicitacao)}</p>
@@ -28,7 +26,7 @@ export function TelaAtividades({ solicitacoes, buscarObraPorId, aoAprovar, aoRej
       </header>
 
       <div className={estilos.atividadeRota}>
-        <div><span>Origem</span><strong>{obraOrigem?.nome || (solicitacao.tipo === 'Aquisição' ? 'Aquisição externa' : 'Depósito central')}</strong></div>
+        <div><span>Origem</span><strong>{obraOrigem?.nome || 'Depósito central'}</strong></div>
         <ArrowRight size={18} aria-hidden="true" />
         <div><span>Destino</span><strong>{obraDestino?.nome || 'Depósito central'}</strong></div>
       </div>

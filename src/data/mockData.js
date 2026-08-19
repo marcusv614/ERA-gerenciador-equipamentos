@@ -141,26 +141,9 @@ export const solicitacoesIniciais = [
     ],
   },
   {
-    id: 's2', tipo: 'Aquisição', tecnico: 'Amanda Castro', obraOrigemId: null, obraDestinoId: 'o5',
-    dataSolicitacao: '2026-08-18', status: 'Pendente', observacao: 'Reposição do consumo previsto para a próxima etapa da expansão.',
-    materiais: [
-      { id: 'm3', nome: 'Conector óptico SC/APC', quantidade: 80 },
-      { id: 'm4', nome: 'Caixa de emenda 24 fibras', quantidade: 6 },
-      { id: 'm5', nome: 'Bobina de cabo drop', quantidade: 2 },
-    ],
-  },
-  {
     id: 's3', tipo: 'Movimentação', tecnico: 'Marcos Vinícius', obraOrigemId: 'o2', obraDestinoId: 'o6',
     dataSolicitacao: '2026-08-17', status: 'Aprovada', observacao: 'Transferência para continuidade das medições do backbone.',
     materiais: [{ id: 'm6', nome: 'Fluke Networks CertiFiber Pro', quantidade: 1, identificacao: 'FLK-33872' }],
-  },
-  {
-    id: 's4', tipo: 'Aquisição', tecnico: 'Bruno Alencar', obraOrigemId: null, obraDestinoId: 'o3',
-    dataSolicitacao: '2026-08-16', status: 'Rejeitada', observacao: 'Solicitação substituída por materiais disponíveis no depósito.',
-    materiais: [
-      { id: 'm7', nome: 'Power Meter EXFO FPM-600', quantidade: 1 },
-      { id: 'm8', nome: 'Cordão óptico SC/APC', quantidade: 12 },
-    ],
   },
 ];
 
