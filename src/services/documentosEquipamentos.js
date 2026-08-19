@@ -123,15 +123,17 @@ export function imprimirCautelaObra(obra, equipamentos) {
 }
 
 export function imprimirCautelaSolicitacao(solicitacao, buscarObraPorId) {
+  const identificadorSolicitacao = String(solicitacao.id ?? 'sem identificacao').toUpperCase();
+  const materiais = Array.isArray(solicitacao.materiais) ? solicitacao.materiais : [];
   const obraOrigem = solicitacao.obraOrigemId ? buscarObraPorId(solicitacao.obraOrigemId) : null;
   const obraDestino = solicitacao.obraDestinoId ? buscarObraPorId(solicitacao.obraDestinoId) : null;
   const origem = obraOrigem?.nome || (solicitacao.tipo === 'Aquisição' ? 'Aquisição externa' : 'Depósito central');
   const destino = obraDestino?.nome || 'Depósito central';
-  const linhas = solicitacao.materiais.length
-    ? solicitacao.materiais.map((material) => `<tr><td>${textoSeguro(material.quantidade)}</td><td>${textoSeguro(material.nome)}</td><td>${textoSeguro(material.identificacao)}</td></tr>`).join('')
+  const linhas = materiais.length
+    ? materiais.map((material) => `<tr><td>${textoSeguro(material.quantidade)}</td><td>${textoSeguro(material.nome)}</td><td>${textoSeguro(material.identificacao)}</td></tr>`).join('')
     : '<tr><td colspan="3">Nenhum material informado na solicitação.</td></tr>';
   const cabecalho = `<div class="doc-card"><div class="doc-top"><img class="doc-logo" src="${logoEra}" alt="ERA Engenharia de Redes da Amazônia"/><h1>Cautela da solicitação</h1></div><div class="header">
-    <div class="header-row"><span class="label">Solicitação</span><span class="value">${textoSeguro(solicitacao.id.toUpperCase())}</span></div>
+    <div class="header-row"><span class="label">Solicitação</span><span class="value">${textoSeguro(identificadorSolicitacao)}</span></div>
     <div class="header-row"><span class="label">Tipo</span><span class="value">${textoSeguro(solicitacao.tipo)}</span></div>
     <div class="header-row"><span class="label">Status</span><span class="value">${textoSeguro(solicitacao.status)}</span></div>
     <div class="header-row"><span class="label">Data da solicitação</span><span class="value">${formatarData(solicitacao.dataSolicitacao)}</span></div>
@@ -141,7 +143,7 @@ export function imprimirCautelaSolicitacao(solicitacao, buscarObraPorId) {
   </div></div>`;
   const observacao = solicitacao.observacao ? `<h2>Observação</h2><p class="muted">${textoSeguro(solicitacao.observacao)}</p>` : '';
   const conteudo = `${cabecalho}<h2>Materiais solicitados</h2><table><thead><tr><th>Quantidade</th><th>Material</th><th>Identificação / Série</th></tr></thead><tbody>${linhas}</tbody></table>${observacao}${ASSINATURAS_CAUTELA}<p class="muted">Gerado em ${formatarData(new Date())}</p>`;
-  abrirJanelaDeImpressao(`Cautela da solicitação — ${solicitacao.id.toUpperCase()}`, conteudo);
+  abrirJanelaDeImpressao(`Cautela da solicitação — ${identificadorSolicitacao}`, conteudo);
 }
 
 export function imprimirHistoricoObra(obra, equipamentos) {
