@@ -10,7 +10,7 @@ export function TelaAlterarSenha() {
   const [senhaAtual, definirSenhaAtual] = useState(''); const [novaSenha, definirNovaSenha] = useState(''); const [confirmacao, definirConfirmacao] = useState('');
   const [senhasVisiveis, definirSenhasVisiveis] = useState(false); const [erro, definirErro] = useState(''); const [enviando, definirEnviando] = useState(false);
   const rotuloVisibilidade = senhasVisiveis ? 'Ocultar senhas' : 'Visualizar senhas';
-  const enviar = async (evento) => { evento.preventDefault(); if(novaSenha.length<10){definirErro('A nova senha precisa ter pelo menos 10 caracteres.');return;} if(novaSenha!==confirmacao){definirErro('A confirmação não corresponde à nova senha.');return;} definirEnviando(true);definirErro('');try{await trocarSenha({senhaAtual,novaSenha});}catch(excecao){definirErro(excecao.message);}finally{definirEnviando(false);} };
+  const enviar = async (evento) => { evento.preventDefault(); if(novaSenha.length<6){definirErro('A nova senha precisa ter pelo menos 6 caracteres.');return;} if(novaSenha!==confirmacao){definirErro('A confirmação não corresponde à nova senha.');return;} definirEnviando(true);definirErro('');try{await trocarSenha({senhaAtual,novaSenha});}catch(excecao){definirErro(excecao.message);}finally{definirEnviando(false);} };
 
   return <main className={estilos.pagina}><section className={estilos.cartao}>
     <img src={logoEra} alt="ERA" className={estilos.logo}/><div><p className={estilos.sobretitulo}>Primeiro acesso</p><h1>Crie sua senha</h1><p className={estilos.descricao}>Substitua a senha temporária antes de acessar o painel.</p></div>
