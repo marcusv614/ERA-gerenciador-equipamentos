@@ -15,6 +15,13 @@ const ESTILOS_DOCUMENTO = `
   .signature-box{display:flex;flex-direction:column;gap:6px;font-size:9px}.line{border-bottom:1px solid #111;padding-top:18px}
 `;
 
+const ASSINATURAS_CAUTELA = `<div class="signatures">
+  <div class="signature-box"><span>Responsável técnico — Entrada</span><div class="line"></div></div>
+  <div class="signature-box"><span>Responsável técnico — Saída</span><div class="line"></div></div>
+  <div class="signature-box"><span>Responsável cliente — Entrada</span><div class="line"></div></div>
+  <div class="signature-box"><span>Responsável cliente — Saída</span><div class="line"></div></div>
+</div>`;
+
 function textoSeguro(valor) {
   return String(valor ?? '—')
     .replaceAll('&', '&amp;')
@@ -111,9 +118,30 @@ export function imprimirCautelaObra(obra, equipamentos) {
   const equipamentosDaObra = equipamentos.filter(({ obraId }) => obraId === obra.id);
   const tecnicos = [...new Set(equipamentosDaObra.map(({ tecnico }) => tecnico).filter(Boolean))];
   const linhas = equipamentosDaObra.length ? equipamentosDaObra.map((equipamento) => `<tr><td>${textoSeguro(equipamento.tipo)}</td><td>${textoSeguro(equipamento.modelo)}</td><td>${textoSeguro(equipamento.serie)}</td><td>${textoSeguro(equipamento.tecnico)}</td><td>${formatarData(equipamento.data || equipamento.dataEntrada || equipamento.saida)}</td></tr>`).join('') : '<tr><td colspan="5">Nenhum equipamento cadastrado na obra.</td></tr>';
-  const assinaturas = '<div class="signatures"><div class="signature-box"><span>Responsável técnico (Saída)</span><div class="line"></div></div><div class="signature-box"><span>Responsável cliente (Saída)</span><div class="line"></div></div><div class="signature-box"><span>Responsável técnico (Entrada)</span><div class="line"></div></div><div class="signature-box"><span>Responsável cliente (Entrada)</span><div class="line"></div></div></div>';
-  const conteudo = `${criarCabecalhoObra(obra, tecnicos, 'Cautela de materiais')}<h2>Equipamentos atuais</h2><table><thead><tr><th>Tipo</th><th>Modelo</th><th>Série</th><th>Técnico</th><th>Data de entrada</th></tr></thead><tbody>${linhas}</tbody></table>${assinaturas}<p class="muted">Gerado em ${formatarData(new Date())}</p>`;
+  const conteudo = `${criarCabecalhoObra(obra, tecnicos, 'Cautela de materiais')}<h2>Equipamentos atuais</h2><table><thead><tr><th>Tipo</th><th>Modelo</th><th>Série</th><th>Técnico</th><th>Data de entrada</th></tr></thead><tbody>${linhas}</tbody></table>${ASSINATURAS_CAUTELA}<p class="muted">Gerado em ${formatarData(new Date())}</p>`;
   abrirJanelaDeImpressao(`Cautela — ${obra.nome}`, conteudo);
+}
+
+export function imprimirCautelaSolicitacao(solicitacao, buscarObraPorId) {
+  const obraOrigem = solicitacao.obraOrigemId ? buscarObraPorId(solicitacao.obraOrigemId) : null;
+  const obraDestino = solicitacao.obraDestinoId ? buscarObraPorId(solicitacao.obraDestinoId) : null;
+  const origem = obraOrigem?.nome || (solicitacao.tipo === 'Aquisição' ? 'Aquisição externa' : 'Depósito central');
+  const destino = obraDestino?.nome || 'Depósito central';
+  const linhas = solicitacao.materiais.length
+    ? solicitacao.materiais.map((material) => `<tr><td>${textoSeguro(material.quantidade)}</td><td>${textoSeguro(material.nome)}</td><td>${textoSeguro(material.identificacao)}</td></tr>`).join('')
+    : '<tr><td colspan="3">Nenhum material informado na solicitação.</td></tr>';
+  const cabecalho = `<div class="doc-card"><div class="doc-top"><img class="doc-logo" src="${logoEra}" alt="ERA Engenharia de Redes da Amazônia"/><h1>Cautela da solicitação</h1></div><div class="header">
+    <div class="header-row"><span class="label">Solicitação</span><span class="value">${textoSeguro(solicitacao.id.toUpperCase())}</span></div>
+    <div class="header-row"><span class="label">Tipo</span><span class="value">${textoSeguro(solicitacao.tipo)}</span></div>
+    <div class="header-row"><span class="label">Status</span><span class="value">${textoSeguro(solicitacao.status)}</span></div>
+    <div class="header-row"><span class="label">Data da solicitação</span><span class="value">${formatarData(solicitacao.dataSolicitacao)}</span></div>
+    <div class="header-row"><span class="label">Técnico solicitante</span><span class="value">${textoSeguro(solicitacao.tecnico)}</span></div>
+    <div class="header-row"><span class="label">Origem</span><span class="value">${textoSeguro(origem)}</span></div>
+    <div class="header-row"><span class="label">Destino</span><span class="value">${textoSeguro(destino)}</span></div>
+  </div></div>`;
+  const observacao = solicitacao.observacao ? `<h2>Observação</h2><p class="muted">${textoSeguro(solicitacao.observacao)}</p>` : '';
+  const conteudo = `${cabecalho}<h2>Materiais solicitados</h2><table><thead><tr><th>Quantidade</th><th>Material</th><th>Identificação / Série</th></tr></thead><tbody>${linhas}</tbody></table>${observacao}${ASSINATURAS_CAUTELA}<p class="muted">Gerado em ${formatarData(new Date())}</p>`;
+  abrirJanelaDeImpressao(`Cautela da solicitação — ${solicitacao.id.toUpperCase()}`, conteudo);
 }
 
 export function imprimirHistoricoObra(obra, equipamentos) {

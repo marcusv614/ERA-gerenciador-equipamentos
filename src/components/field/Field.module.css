@@ -10,3 +10,10 @@
   font-weight: 500;
   color: var(--text-muted);
 }
+
+.hint {
+  margin-top: -3px;
+  color: var(--text-muted);
+  font-size: 10.5px;
+  line-height: 1.35;
+}

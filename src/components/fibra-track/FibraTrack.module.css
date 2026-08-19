@@ -144,6 +144,21 @@
   flex-shrink: 0;
 }
 
+.navBadge {
+  min-width: 20px;
+  height: 20px;
+  margin-left: auto;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fffaf0;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 .navSub {
   margin-left: 24px;
   display: flex;
@@ -1235,9 +1250,89 @@ button.equipCard {
   border-color: rgba(var(--era-orange-rgb), 0.25);
 }
 
+/* Central de solicitações das equipes de campo */
+.atividadesTela { display:flex; flex-direction:column; gap:18px; }
+.atividadesResumo { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.atividadesResumo > div { min-height:56px; padding:12px 14px; display:flex; align-items:center; gap:9px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text-muted); }
+.atividadesResumo > div:first-child svg { color:var(--warn); }
+.atividadesResumo > div:nth-child(2) svg { color:#2f9e68; }
+.atividadesResumo > div:nth-child(3) svg { color:#d15454; }
+.atividadesResumo strong { margin-right:3px; color:var(--text); font-size:17px; }
+.atividadesGrupos { display:flex; flex-direction:column; gap:24px; }
+.atividadeGrupo { min-width:0; }
+.atividadeGrupo + .atividadeGrupo { padding-top:22px; border-top:1px solid var(--border); }
+.atividadeGrupoCabecalho { margin-bottom:11px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.atividadeGrupoCabecalho h2 { margin:0; color:var(--text); font:600 15px/1.35 var(--font-display); }
+.atividadeGrupoCabecalho p { margin:2px 0 0; color:var(--text-muted); font-size:11.5px; }
+.atividadeGrupoCabecalho > span { min-width:28px; height:28px; padding:0 8px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--border); border-radius:999px; background:var(--surface); color:var(--text-muted); font-size:11px; font-weight:700; }
+.atividadeGrupoVazio { padding:22px; border:1px dashed var(--border); border-radius:12px; color:var(--text-muted); font-size:12px; text-align:center; }
+.atividadesLista { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:14px; }
+.atividadeCard { min-width:0; padding:16px; border:1px solid var(--border); border-radius:14px; background:var(--surface); box-shadow:0 1px 2px rgba(47,47,47,.08); }
+.atividadeCabecalho { display:flex; align-items:flex-start; gap:11px; }
+.atividadeIcone { width:40px; height:40px; flex:0 0 40px; display:flex; align-items:center; justify-content:center; border-radius:10px; color:var(--accent); background:var(--accent-dim); }
+.atividadeIconeAquisicao { color:var(--info); background:rgba(var(--era-yellow-rgb),.18); }
+.atividadeTitulo { min-width:0; flex:1; }
+.atividadeTitulo > div { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.atividadeTitulo h2 { margin:0; color:var(--text); font:600 14px/1.35 var(--font-display); }
+.atividadeTitulo p { margin:3px 0 0; color:var(--text-muted); font-size:11.5px; line-height:1.4; }
+.atividadeStatus { flex-shrink:0; padding:4px 8px; border-radius:999px; font-size:10.5px; font-weight:700; }
+.atividadeStatusPendente { color:var(--warn); background:rgba(var(--era-yellow-rgb),.15); }
+.atividadeStatusAprovada { color:#27845a; background:rgba(47,158,104,.13); }
+.atividadeStatusRejeitada { color:#c44444; background:rgba(209,84,84,.12); }
+.atividadeRota { margin-top:14px; padding:12px; display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; gap:10px; border-radius:10px; background:var(--surface-2); }
+.atividadeRota > div { min-width:0; display:flex; flex-direction:column; gap:3px; }
+.atividadeRota > div:last-child { text-align:right; }
+.atividadeRota span { color:var(--text-muted); font-size:9px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+.atividadeRota strong { color:var(--text); font-size:11.5px; line-height:1.35; overflow-wrap:anywhere; }
+.atividadeRota > svg { color:var(--accent); }
+.atividadeMateriais { margin-top:14px; }
+.atividadeMateriais h3 { margin:0 0 7px; color:var(--text-muted); font-size:10px; letter-spacing:.04em; text-transform:uppercase; }
+.atividadeMateriais ul { margin:0; padding:0; display:flex; flex-direction:column; gap:5px; list-style:none; }
+.atividadeMateriais li { display:flex; align-items:flex-start; gap:8px; color:var(--text); font-size:12px; }
+.atividadeMateriais li small { display:block; margin-top:1px; color:var(--text-muted); font:10.5px var(--font-mono); }
+.materialQuantidade { min-width:28px; padding:2px 5px; border-radius:5px; background:var(--surface-2); color:var(--accent); font-size:10px; font-weight:700; text-align:center; }
+.atividadeObservacao { margin:12px 0 0; padding-left:9px; border-left:2px solid var(--border-strong); color:var(--text-muted); font-size:11.5px; line-height:1.45; }
+.atividadeAcoes { margin-top:15px; padding-top:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; border-top:1px solid var(--border); }
+.atividadeAcoes > div { display:flex; flex-wrap:wrap; gap:7px; }
+.atividadeAcoes button { min-height:36px; padding:7px 11px; display:inline-flex; align-items:center; justify-content:center; gap:5px; border-radius:8px; font-size:11.5px; font-weight:600; cursor:pointer; }
+.atividadeCautela { border:1px solid var(--border-strong); background:var(--surface-2); color:var(--text); }
+.atividadeEditar { border:1px solid var(--border); background:transparent; color:var(--text-muted); }
+.atividadeRejeitar { border:1px solid rgba(209,84,84,.25); background:rgba(209,84,84,.08); color:#c44444; }
+.atividadeAprovar { border:1px solid transparent; background:#2f9e68; color:#fff; }
+.atividadeAcoes button:hover:not(:disabled) { filter:brightness(1.06); }
+.atividadeAcoes button:disabled { opacity:.38; cursor:not-allowed; }
+
 @media (max-width: 768px) {
   .root {
     overflow: hidden;
+  }
+
+  .equipHead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .equipIdent {
+    min-width: 0;
+    align-items: center;
+    flex: none;
+  }
+
+  .equipHeadActions {
+    align-self: start;
+    margin-left: 0;
+  }
+
+  .equipModel {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 12.5px;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .sidebarScrim {
@@ -1383,8 +1478,8 @@ button.equipCard {
   .equipModel {
     display: -webkit-box;
     overflow: hidden;
-    font-size: 13px;
-    line-height: 1.35;
+    font-size: 12.5px;
+    line-height: 1.3;
     overflow-wrap: anywhere;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -1433,6 +1528,40 @@ button.equipCard {
   .obraEquipMov {
     white-space: normal;
   }
+
+  .atividadesResumo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .atividadesLista {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .atividadeRota {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .atividadeRota > svg {
+    transform: rotate(90deg);
+  }
+
+  .atividadeRota > div:last-child {
+    text-align: left;
+  }
+
+  .atividadeAcoes {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .atividadeAcoes > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .atividadeAcoes button {
+    min-height: 44px;
+  }
 }
 
 @media (max-width: 440px) {
@@ -1468,6 +1597,15 @@ button.equipCard {
   .equipIdent,
   .obraEquipInfo {
     width: 100%;
+  }
+
+  .equipHead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .equipHeadActions {
+    width: 100%;
+    justify-content: flex-end;
   }
 
   .equipModel,

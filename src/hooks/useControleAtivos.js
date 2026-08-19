@@ -3,6 +3,7 @@ import {
   equipamentosIniciais,
   funcionariosIniciais,
   obrasIniciais,
+  solicitacoesIniciais,
 } from '../data/mockData';
 import { obterDataAtual } from '../utils/datas';
 import { obterHistoricoEquipamento } from '../utils/historicoEquipamento';
@@ -11,6 +12,7 @@ export function useControleAtivos() {
   const [obras, definirObras] = useState(obrasIniciais);
   const [equipamentos, definirEquipamentos] = useState(equipamentosIniciais);
   const [funcionarios, definirFuncionarios] = useState(funcionariosIniciais);
+  const [solicitacoes, definirSolicitacoes] = useState(solicitacoesIniciais);
 
   const buscarObraPorId = (identificador) =>
     obras.find((obra) => obra.id === identificador);
@@ -124,10 +126,92 @@ export function useControleAtivos() {
     return obterHistoricoEquipamento(equipamento, buscarObraPorId);
   }
 
+  function sincronizarMovimentacaoAprovada(solicitacaoAtualizada, solicitacaoAnterior = null) {
+    if (solicitacaoAtualizada.tipo !== 'Movimentação') return;
+
+    const normalizarSerie = (valor) => String(valor || '').trim().toLocaleLowerCase('pt-BR');
+    const seriesAtuais = new Set(solicitacaoAtualizada.materiais.map(({ identificacao }) => normalizarSerie(identificacao)).filter(Boolean));
+    const seriesAnteriores = new Set((solicitacaoAnterior?.materiais || []).map(({ identificacao }) => normalizarSerie(identificacao)).filter(Boolean));
+    const dataMovimentacao = solicitacaoAtualizada.dataSolicitacao || obterDataAtual();
+    const destinoObraId = solicitacaoAtualizada.obraDestinoId || null;
+    const origemObraId = solicitacaoAtualizada.obraOrigemId || null;
+
+    definirEquipamentos((equipamentosAtuais) => equipamentosAtuais.map((equipamento) => {
+      const serie = normalizarSerie(equipamento.serie);
+      const pertenceAgora = seriesAtuais.has(serie);
+      const pertenciaAntes = seriesAnteriores.has(serie);
+      if (!pertenceAgora && !pertenciaAntes) return equipamento;
+
+      const historicoSemSolicitacao = obterHistoricoEquipamento(equipamento, buscarObraPorId)
+        .filter(({ solicitacaoId }) => solicitacaoId !== solicitacaoAtualizada.id);
+
+      if (!pertenceAgora) {
+        const ultimaMovimentacaoAnterior = historicoSemSolicitacao.at(-1);
+        return {
+          ...equipamento,
+          obraId: ultimaMovimentacaoAnterior?.destinoObraId ?? origemObraId,
+          tecnico: ultimaMovimentacaoAnterior?.tecnico || null,
+          status: ultimaMovimentacaoAnterior?.status || (origemObraId ? 'Em campo' : 'Em estoque'),
+          historico: historicoSemSolicitacao,
+        };
+      }
+
+      const movimentacaoDaSolicitacao = {
+        id: `solicitacao-${solicitacaoAtualizada.id}-${equipamento.id}`,
+        solicitacaoId: solicitacaoAtualizada.id,
+        dataMovimentacao,
+        dataSaida: dataMovimentacao,
+        dataEntrada: dataMovimentacao,
+        origemObraId,
+        destinoObraId,
+        origemNome: origemObraId ? buscarObraPorId(origemObraId)?.nome : 'Depósito central',
+        destinoNome: destinoObraId ? buscarObraPorId(destinoObraId)?.nome : 'Depósito central',
+        tecnico: solicitacaoAtualizada.tecnico,
+        status: destinoObraId ? 'Em campo' : 'Em estoque',
+      };
+
+      return {
+        ...equipamento,
+        obraId: destinoObraId,
+        tecnico: destinoObraId ? solicitacaoAtualizada.tecnico : null,
+        status: movimentacaoDaSolicitacao.status,
+        data: dataMovimentacao,
+        saida: dataMovimentacao,
+        dataSaida: dataMovimentacao,
+        dataEntrada: dataMovimentacao,
+        historico: [...historicoSemSolicitacao, movimentacaoDaSolicitacao],
+      };
+    }));
+  }
+
+  function definirStatusSolicitacao(identificador, status) {
+    const solicitacaoAtual = solicitacoes.find((solicitacao) => solicitacao.id === identificador);
+    if (status === 'Aprovada' && solicitacaoAtual?.status !== 'Aprovada') {
+      sincronizarMovimentacaoAprovada({ ...solicitacaoAtual, status });
+    }
+    definirSolicitacoes((solicitacoesAtuais) => solicitacoesAtuais.map((solicitacao) =>
+      solicitacao.id === identificador
+        ? { ...solicitacao, status, dataDecisao: obterDataAtual() }
+        : solicitacao));
+  }
+
+  function editarSolicitacao(identificador, dadosAtualizados) {
+    const solicitacaoAnterior = solicitacoes.find((solicitacao) => solicitacao.id === identificador);
+    const solicitacaoAtualizada = solicitacaoAnterior ? { ...solicitacaoAnterior, ...dadosAtualizados } : null;
+    if (solicitacaoAtualizada?.status === 'Aprovada') {
+      sincronizarMovimentacaoAprovada(solicitacaoAtualizada, solicitacaoAnterior);
+    }
+    definirSolicitacoes((solicitacoesAtuais) => solicitacoesAtuais.map((solicitacao) =>
+      solicitacao.id === identificador
+        ? { ...solicitacao, ...dadosAtualizados }
+        : solicitacao));
+  }
+
   return {
     obras,
     equipamentos,
     funcionarios,
+    solicitacoes,
     resumoEquipamentos,
     tecnicosCadastrados,
     buscarObraPorId,
@@ -136,5 +220,7 @@ export function useControleAtivos() {
     cadastrarFuncionario,
     movimentarEquipamento,
     consultarHistorico,
+    definirStatusSolicitacao,
+    editarSolicitacao,
   };
 }

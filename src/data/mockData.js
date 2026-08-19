@@ -61,7 +61,15 @@ export const equipamentosIniciais = [
     ],
   },
   { id: 'e7', tipo: 'Fluke', modelo: 'Fluke DSX2-5000', serie: 'FLK-51093', status: 'Em estoque', obraId: null, tecnico: null },
-  { id: 'e14', tipo: 'Fluke', modelo: 'Fluke Networks CertiFiber Pro', serie: 'FLK-33872', status: 'Em campo', obraId: 'o2', tecnico: 'Marcos Vinícius', saida: '2026-06-17' },
+  {
+    id: 'e14', tipo: 'Fluke', modelo: 'Fluke Networks CertiFiber Pro', serie: 'FLK-33872',
+    status: 'Em campo', obraId: 'o6', tecnico: 'Marcos Vinícius', saida: '2026-08-17', data: '2026-08-17', dataEntrada: '2026-08-17', dataSaida: '2026-08-17',
+    historico: [{
+      id: 'solicitacao-s3-e14', solicitacaoId: 's3', dataMovimentacao: '2026-08-17', dataSaida: '2026-08-17', dataEntrada: '2026-08-17',
+      origemObraId: 'o2', destinoObraId: 'o6', origemNome: 'Manutenção Backbone BR-174', destinoNome: 'Backbone Óptico Manaus–Rio Preto',
+      tecnico: 'Marcos Vinícius', status: 'Em campo',
+    }],
+  },
   { id: 'e21', tipo: 'Fluke', modelo: 'Fluke DSX2-5000', serie: 'FLK-51094', status: 'Em campo', obraId: 'o5', tecnico: 'Amanda Castro', saida: '2026-07-01' },
   { id: 'e22', tipo: 'Fluke', modelo: 'Fluke DSX2-8000', serie: 'FLK-28800', status: 'Em campo', obraId: 'o8', tecnico: 'Rafael Torres', saida: '2026-07-03' },
   { id: 'e23', tipo: 'Fluke', modelo: 'Fluke Networks MicroScanner2', serie: 'FLK-20985', status: 'Em estoque', obraId: null, tecnico: null },
@@ -119,6 +127,41 @@ export const funcionariosIniciais = [
   { id: 'f8', nome: 'Marcos Vinícius', cargo: 'Técnico de campo', email: 'marcos.vinicius@era.com.br', telefone: '(92) 99101-1008', status: 'Ativo' },
   { id: 'f9', nome: 'Rafael Torres', cargo: 'Técnico de campo', email: 'rafael.torres@era.com.br', telefone: '(92) 99101-1009', status: 'Ativo' },
   { id: 'f10', nome: 'Renata Nogueira', cargo: 'Gerente de obras', email: 'renata.nogueira@era.com.br', telefone: '(92) 99101-1010', status: 'Ativo' },
+];
+
+// Solicitações recebidas das equipes de campo. Mais tarde esta coleção será
+// substituída pelo endpoint de atividades do painel dos técnicos.
+export const solicitacoesIniciais = [
+  {
+    id: 's1', tipo: 'Movimentação', tecnico: 'Diego Farias', obraOrigemId: 'o1', obraDestinoId: 'o8',
+    dataSolicitacao: '2026-08-18', status: 'Pendente', observacao: 'Equipamentos necessários para os testes finais do headend.',
+    materiais: [
+      { id: 'm1', nome: 'Fluke DSX2-5000', quantidade: 1, identificacao: 'FLK-51092' },
+      { id: 'm2', nome: 'Localizador de Fibra Ativa VFL', quantidade: 1, identificacao: 'VFL-10233' },
+    ],
+  },
+  {
+    id: 's2', tipo: 'Aquisição', tecnico: 'Amanda Castro', obraOrigemId: null, obraDestinoId: 'o5',
+    dataSolicitacao: '2026-08-18', status: 'Pendente', observacao: 'Reposição do consumo previsto para a próxima etapa da expansão.',
+    materiais: [
+      { id: 'm3', nome: 'Conector óptico SC/APC', quantidade: 80 },
+      { id: 'm4', nome: 'Caixa de emenda 24 fibras', quantidade: 6 },
+      { id: 'm5', nome: 'Bobina de cabo drop', quantidade: 2 },
+    ],
+  },
+  {
+    id: 's3', tipo: 'Movimentação', tecnico: 'Marcos Vinícius', obraOrigemId: 'o2', obraDestinoId: 'o6',
+    dataSolicitacao: '2026-08-17', status: 'Aprovada', observacao: 'Transferência para continuidade das medições do backbone.',
+    materiais: [{ id: 'm6', nome: 'Fluke Networks CertiFiber Pro', quantidade: 1, identificacao: 'FLK-33872' }],
+  },
+  {
+    id: 's4', tipo: 'Aquisição', tecnico: 'Bruno Alencar', obraOrigemId: null, obraDestinoId: 'o3',
+    dataSolicitacao: '2026-08-16', status: 'Rejeitada', observacao: 'Solicitação substituída por materiais disponíveis no depósito.',
+    materiais: [
+      { id: 'm7', nome: 'Power Meter EXFO FPM-600', quantidade: 1 },
+      { id: 'm8', nome: 'Cordão óptico SC/APC', quantidade: 12 },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------

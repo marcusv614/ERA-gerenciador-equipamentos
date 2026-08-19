@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Boxes, Building2, ChevronDown, ChevronRight, UserRound, Users, Warehouse } from 'lucide-react';
+import { Activity, Boxes, Building2, ChevronDown, ChevronRight, UserRound, Users, Warehouse } from 'lucide-react';
 import { iconePorTipoEquipamento, tiposEquipamento } from '../../data/mockData';
 import logoEra from '../../assets/ERALTDA.png';
 
-export function MenuLateral({ aberto, telaAtual, tipoSelecionado, obras, funcionarios, aoFechar, aoSelecionarTela, aoSelecionarTipo, aoSelecionarBusca, estilos }) {
+export function MenuLateral({ aberto, telaAtual, tipoSelecionado, obras, funcionarios, totalAtividadesPendentes, aoFechar, aoSelecionarTela, aoSelecionarTipo, aoSelecionarBusca, estilos }) {
   const [grupoExpandido, definirGrupoExpandido] = useState(null);
   const alternarGrupo = (grupo, tela) => {
     definirGrupoExpandido((grupoAtual) => grupoAtual === grupo ? null : grupo);
@@ -34,6 +34,7 @@ export function MenuLateral({ aberto, telaAtual, tipoSelecionado, obras, funcion
           {grupoExpandido === 'funcionarios' && <div className={estilos.navSub}>
             {funcionarios.map((funcionario) => <button key={funcionario.id} onClick={() => { aoSelecionarTela('funcionarios'); aoSelecionarBusca(funcionario.nome); }} className={estilos.navSubItem}><UserRound size={13} /><span>{funcionario.nome}</span></button>)}
           </div>}
+          <button onClick={() => { definirGrupoExpandido(null); aoSelecionarTela('atividades'); }} className={`${estilos.navItem} ${telaAtual === 'atividades' ? estilos.navItemActive : ''}`}><Activity size={16} /> Atividades {totalAtividadesPendentes > 0 && <span className={estilos.navBadge}>{totalAtividadesPendentes}</span>}</button>
           <button onClick={() => { definirGrupoExpandido(null); aoSelecionarTela('deposito'); }} className={`${estilos.navItem} ${telaAtual === 'deposito' ? estilos.navItemActive : ''}`}><Warehouse size={16} /> Depósito</button>
         </nav>
         <div className={estilos.profileWrap}><div className={estilos.profile}><div className={estilos.avatar}>RN</div><div className={estilos.profileText}><div className={estilos.profileName}>Renata Nogueira</div><div className={estilos.profileRole}>Coordenação de Ativos</div></div></div></div>
