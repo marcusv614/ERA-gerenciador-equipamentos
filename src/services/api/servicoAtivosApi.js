@@ -5,6 +5,31 @@ const obter = async (rota, configuracao) => obterDadosResposta(await clienteHttp
 const criar = async (rota, dados) => obterDadosResposta(await clienteHttp.post(rota, dados));
 const atualizar = async (rota, dados) => obterDadosResposta(await clienteHttp.patch(rota, dados));
 
+const tipoEquipamentoParaInterface = {
+  FLUKE: 'Fluke',
+  OTDR: 'OTDR',
+};
+
+const statusEquipamentoParaInterface = {
+  'DISPONÍVEL': 'Em estoque',
+  DISPONIVEL: 'Em estoque',
+  MANUTENÇÃO: 'Em manutenção',
+  MANUTENCAO: 'Em manutenção',
+};
+
+function normalizarEquipamento(equipamento) {
+  const tipoRecebido = String(equipamento.tipo || '').trim();
+  const statusRecebido = String(equipamento.status || '').trim();
+  const tipoNormalizado = tipoRecebido.toLocaleUpperCase('pt-BR');
+  const statusNormalizado = statusRecebido.toLocaleUpperCase('pt-BR');
+
+  return {
+    ...equipamento,
+    tipo: tipoEquipamentoParaInterface[tipoNormalizado] || 'Outro',
+    status: statusEquipamentoParaInterface[statusNormalizado] || statusRecebido,
+  };
+}
+
 export const apiObras = {
   listar: () => obter(ROTAS_API.obras),
   cadastrar: (dados) => criar(ROTAS_API.obras, dados),
@@ -14,10 +39,10 @@ export const apiObras = {
 };
 
 export const apiEquipamentos = {
-  listar: () => obter(ROTAS_API.equipamentos),
-  cadastrar: (dados) => criar(ROTAS_API.equipamentos, dados),
-  atualizar: (equipamentoId, dados) => atualizar(ROTAS_API.equipamento(equipamentoId), dados),
-  movimentar: (equipamentoId, dados) => criar(ROTAS_API.movimentacoesEquipamento(equipamentoId), dados),
+  listar: async () => (await obter(ROTAS_API.equipamentos)).map(normalizarEquipamento),
+  cadastrar: async (dados) => normalizarEquipamento(await criar(ROTAS_API.equipamentos, dados)),
+  atualizar: async (equipamentoId, dados) => normalizarEquipamento(await atualizar(ROTAS_API.equipamento(equipamentoId), dados)),
+  movimentar: async (equipamentoId, dados) => normalizarEquipamento(await criar(ROTAS_API.movimentacoesEquipamento(equipamentoId), dados)),
   obterHistorico: (equipamentoId) => obter(ROTAS_API.historicoEquipamento(equipamentoId)),
 };
 

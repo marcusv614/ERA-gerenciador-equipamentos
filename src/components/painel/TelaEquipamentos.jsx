@@ -1,4 +1,4 @@
-import { ArrowLeftRight, Download, FileText, MapPin } from 'lucide-react';
+import { ArrowLeftRight, Download, FileText, MapPin, Wrench } from 'lucide-react';
 import { IndicadorStatus } from '../status-badge/StatusBadge';
 import { iconePorTipoEquipamento, statusEquipamento, tiposEquipamento } from '../../data/mockData';
 
@@ -13,7 +13,7 @@ export function TelaEquipamentos({ equipamentos, buscarObraPorId, tipoSelecionad
     </div>
     <div className={estilos.equipGrid}>
       {equipamentos.map((equipamento) => {
-        const IconeTipo = iconePorTipoEquipamento[equipamento.tipo];
+        const IconeTipo = iconePorTipoEquipamento[equipamento.tipo] || Wrench;
         const obra = equipamento.obraId ? buscarObraPorId(equipamento.obraId) : null;
         return <div key={equipamento.id} className={estilos.equipCard}>
           <div className={estilos.equipHead}><div className={estilos.equipIdent}><div className={`${estilos.equipIconBox} ${estilos[classePorTipo[equipamento.tipo]] || ''}`}><IconeTipo size={16} /></div><div className={estilos.equipTitleWrap}><div className={estilos.equipModel}>{equipamento.modelo}</div><div className={estilos.equipSerie}>{equipamento.serie}</div></div></div>
