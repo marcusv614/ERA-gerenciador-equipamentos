@@ -37,7 +37,7 @@ export function MenuLateral({ aberto, telaAtual, tipoSelecionado, tiposEquipamen
           <button onClick={() => { definirGrupoExpandido(null); aoSelecionarTela('atividades'); }} className={`${estilos.navItem} ${telaAtual === 'atividades' ? estilos.navItemActive : ''}`}><Activity size={16} /> Atividades {totalAtividadesPendentes > 0 && <span className={estilos.navBadge}>{totalAtividadesPendentes}</span>}</button>
           <button onClick={() => { definirGrupoExpandido(null); aoSelecionarTela('deposito'); }} className={`${estilos.navItem} ${telaAtual === 'deposito' ? estilos.navItemActive : ''}`}><Warehouse size={16} /> Depósito</button>
         </nav>
-        <div className={estilos.profileWrap}><div className={estilos.profile}><div className={estilos.avatar}>RN</div><div className={estilos.profileText}><div className={estilos.profileName}>Renata Nogueira</div><div className={estilos.profileRole}>Coordenação de Ativos</div></div></div></div>
+        <div className={estilos.profileWrap}><div className={estilos.profile}><div className={estilos.avatar}>GE</div><div className={estilos.profileText}><div className={estilos.profileName}>Gerente ERA</div><div className={estilos.profileRole}>Gestão de ativos</div></div></div></div>
       </div>
     </aside>
   </>;

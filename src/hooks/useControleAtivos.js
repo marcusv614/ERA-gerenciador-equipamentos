@@ -53,7 +53,7 @@ export function useControleAtivos() {
   [funcionarios]);
 
   const gerenteAtual = useMemo(() => funcionarios.find(({ cargo, status }) =>
-    status === 'Ativo' && cargo.toLocaleLowerCase('pt-BR').includes('gerente'))?.nome || 'Renata Nogueira', [funcionarios]);
+    status === 'Ativo' && cargo.toLocaleLowerCase('pt-BR').includes('gerente'))?.nome || null, [funcionarios]);
 
   async function cadastrarObra(dadosNovaObra) {
     if (apiHabilitada) {
@@ -138,8 +138,8 @@ export function useControleAtivos() {
     if (!equipamento) return false;
 
     const novaSolicitacao = {
-      solicitante: gerenteAtual,
-      tecnico: dadosMovimentacao.tecnico || gerenteAtual,
+      solicitante: gerenteAtual || dadosMovimentacao.tecnico,
+      tecnico: dadosMovimentacao.tecnico,
       obraOrigemId: equipamento.obraId ?? null,
       obraDestinoId: dadosMovimentacao.obraId ?? null,
       dataSolicitacao: dadosMovimentacao.dataMovimentacao || obterDataAtual(),

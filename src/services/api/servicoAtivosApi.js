@@ -8,6 +8,7 @@ const atualizar = async (rota, dados) => obterDadosResposta(await clienteHttp.pa
 const tipoEquipamentoParaInterface = {
   FLUKE: 'Fluke',
   OTDR: 'OTDR',
+  MAQUINA_FUSAO: 'Máquina de fusão',
 };
 
 const statusEquipamentoParaInterface = {
