@@ -1,11 +1,25 @@
 import { ROTAS_API } from '../../config/rotasApi';
 import { clienteHttp, obterDadosResposta } from './clienteHttp';
 
-export async function prepararCsrf() { await clienteHttp.get(ROTAS_API.csrf); }
-export async function entrar(credenciais) { await prepararCsrf(); return obterDadosResposta(await clienteHttp.post(ROTAS_API.login, credenciais)); }
+export async function prepararCsrf() {
+  const resposta = await clienteHttp.get(ROTAS_API.csrf);
+  return obterDadosResposta(resposta).token;
+}
+export async function entrar(credenciais) {
+  const tokenCsrf = await prepararCsrf();
+  return obterDadosResposta(await clienteHttp.post(ROTAS_API.login, credenciais, {
+    headers: { 'X-XSRF-TOKEN': tokenCsrf },
+  }));
+}
 export async function obterSessao() { return obterDadosResposta(await clienteHttp.get(ROTAS_API.sessao)); }
-export async function sair() { await prepararCsrf(); await clienteHttp.post(ROTAS_API.logout); }
-export async function alterarSenha(dados) { await clienteHttp.post(ROTAS_API.alterarSenha, dados); }
+export async function sair() {
+  const tokenCsrf = await prepararCsrf();
+  await clienteHttp.post(ROTAS_API.logout, null, { headers: { 'X-XSRF-TOKEN': tokenCsrf } });
+}
+export async function alterarSenha(dados) {
+  const tokenCsrf = await prepararCsrf();
+  await clienteHttp.post(ROTAS_API.alterarSenha, dados, { headers: { 'X-XSRF-TOKEN': tokenCsrf } });
+}
 
 export const apiUsuarios = {
   listar: async () => obterDadosResposta(await clienteHttp.get(ROTAS_API.usuarios)),
