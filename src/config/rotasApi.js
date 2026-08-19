@@ -1,4 +1,12 @@
 export const ROTAS_API = {
+  csrf: '/auth/csrf',
+  login: '/auth/login',
+  logout: '/auth/logout',
+  sessao: '/auth/me',
+  alterarSenha: '/auth/alterar-senha',
+  usuarios: '/usuarios',
+  statusUsuario: (usuarioId) => `/usuarios/${usuarioId}/status`,
+  redefinirSenhaUsuario: (usuarioId) => `/usuarios/${usuarioId}/redefinicao-senha`,
   resumo: '/painel/resumo',
   obras: '/obras',
   obra: (obraId) => `/obras/${obraId}`,

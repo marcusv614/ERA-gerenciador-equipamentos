@@ -1,0 +1,11 @@
+import { useState } from 'react';
+import { LockKeyhole, UserRound } from 'lucide-react';
+import { useAutenticacao } from '../../contexto/ContextoAutenticacao';
+import logoEra from '../../assets/ERALTDA.png';
+import estilos from './TelaLogin.module.css';
+
+export function TelaLogin() {
+  const { autenticar } = useAutenticacao(); const [login, definirLogin] = useState(''); const [senha, definirSenha] = useState(''); const [erro, definirErro] = useState(''); const [enviando, definirEnviando] = useState(false);
+  const enviar = async (evento) => { evento.preventDefault(); definirErro(''); definirEnviando(true); try { await autenticar({ login, senha }); } catch { definirErro('Login ou senha inválidos. Confira os dados e tente novamente.'); } finally { definirEnviando(false); } };
+  return <main className={estilos.pagina}><section className={estilos.cartao} aria-labelledby="titulo-login"><img src={logoEra} alt="ERA" className={estilos.logo} /><div><p className={estilos.sobretitulo}>Gestão de ativos e obras</p><h1 id="titulo-login">Acesse o painel</h1><p className={estilos.descricao}>Use as credenciais fornecidas pelo administrador.</p></div><form onSubmit={enviar} className={estilos.formulario}><label>Usuário<div className={estilos.campo}><UserRound size={18}/><input autoFocus autoComplete="username" value={login} onChange={(e)=>definirLogin(e.target.value)} required /></div></label><label>Senha<div className={estilos.campo}><LockKeyhole size={18}/><input type="password" autoComplete="current-password" value={senha} onChange={(e)=>definirSenha(e.target.value)} required /></div></label>{erro&&<p className={estilos.erro} role="alert">{erro}</p>}<button disabled={enviando}>{enviando?'Entrando...':'Entrar'}</button></form></section></main>;
+}
