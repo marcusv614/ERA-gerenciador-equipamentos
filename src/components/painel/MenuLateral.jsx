@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Activity, Boxes, Building2, ChevronDown, ChevronRight, UserRound, Users, Warehouse } from 'lucide-react';
-import { iconePorTipoEquipamento, tiposEquipamento } from '../../data/mockData';
 import logoEra from '../../assets/ERALTDA.png';
 
-export function MenuLateral({ aberto, telaAtual, tipoSelecionado, obras, funcionarios, totalAtividadesPendentes, aoFechar, aoSelecionarTela, aoSelecionarTipo, aoSelecionarBusca, estilos }) {
+export function MenuLateral({ aberto, telaAtual, tipoSelecionado, tiposEquipamento, obras, funcionarios, totalAtividadesPendentes, aoFechar, aoSelecionarTela, aoSelecionarTipo, aoSelecionarBusca, estilos }) {
   const [grupoExpandido, definirGrupoExpandido] = useState(null);
   const alternarGrupo = (grupo, tela) => {
     definirGrupoExpandido((grupoAtual) => grupoAtual === grupo ? null : grupo);
@@ -21,10 +20,11 @@ export function MenuLateral({ aberto, telaAtual, tipoSelecionado, obras, funcion
         <nav className={estilos.nav}>
           <button onClick={() => alternarGrupo('equipamentos', 'equipamentos')} className={`${estilos.navItem} ${telaAtual === 'equipamentos' ? estilos.navItemActive : ''}`}><Boxes size={16} /> Equipamentos {renderizarIndicadorGrupo('equipamentos')}</button>
           {grupoExpandido === 'equipamentos' && <div className={estilos.navSub}>
-            {tiposEquipamento.map((tipo) => {
-              const IconeTipo = iconePorTipoEquipamento[tipo];
-              return <button key={tipo} onClick={() => aoSelecionarTipo(tipo)} className={`${estilos.navSubItem} ${tipoSelecionado === tipo && telaAtual === 'equipamentos' ? estilos.navSubItemActive : ''}`}><IconeTipo size={13} />{tipo === 'Outro' ? 'Outros' : `${tipo}s`}</button>;
-            })}
+            <label className={estilos.navSubLabel} htmlFor="categoria-equipamento">Subcategoria</label>
+            <select id="categoria-equipamento" className={estilos.navSubSelect} value={tipoSelecionado} onChange={(evento) => aoSelecionarTipo(evento.target.value)}>
+              <option value="Todos">Todas</option>
+              {tiposEquipamento.map((tipo) => <option key={tipo} value={tipo}>{tipo === 'Outro' ? 'Outros' : tipo}</option>)}
+            </select>
           </div>}
           <button onClick={() => alternarGrupo('obras', 'obras')} className={`${estilos.navItem} ${telaAtual === 'obras' ? estilos.navItemActive : ''}`}><Building2 size={16} /> Obras {renderizarIndicadorGrupo('obras')}</button>
           {grupoExpandido === 'obras' && <div className={estilos.navSub}>

@@ -1,4 +1,5 @@
 import { IndicadorStatus } from '../status-badge/StatusBadge';
+import { Wrench } from 'lucide-react';
 import { iconePorTipoEquipamento } from '../../data/mockData';
 import styles from './DepositoCard.module.css';
 
@@ -39,7 +40,7 @@ export function CartaoDeposito({ equipamentos, obras }) {
           <div className={styles.empty}>Nenhum item fora de campo encontrado.</div>
         ) : (
           equipamentos.map((equipamento) => {
-            const IconeTipo = iconePorTipoEquipamento[equipamento.tipo];
+            const IconeTipo = iconePorTipoEquipamento[equipamento.tipo] || Wrench;
             const obra = buscarObraPorId(equipamento.obraId);
             return (
               <div key={equipamento.id} className={styles.row}>
@@ -48,7 +49,7 @@ export function CartaoDeposito({ equipamentos, obras }) {
                 </div>
                 <div className={styles.info}>
                   <div className={styles.model}>{equipamento.modelo}</div>
-                  <div className={styles.serie}>{equipamento.serie}</div>
+                  <div className={styles.serie}>{equipamento.tipo} · {equipamento.medida || equipamento.serie} · {equipamento.quantidadeDisponivel ?? equipamento.quantidade ?? 1} disponíveis{equipamento.quantidadeReservada > 0 ? ` · ${equipamento.quantidadeReservada} reservadas` : ''}</div>
                 </div>
                 <IndicadorStatus status={equipamento.status} />
                 <div className={styles.local}>{obra ? obra.nome : 'Depósito central'}</div>

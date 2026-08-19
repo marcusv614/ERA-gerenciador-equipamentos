@@ -144,7 +144,7 @@ export function useControleAtivos() {
       obraDestinoId: dadosMovimentacao.obraId ?? null,
       dataSolicitacao: dadosMovimentacao.dataMovimentacao || obterDataAtual(),
       observacao: `Movimentação solicitada pelo gerente. Status desejado: ${dadosMovimentacao.status}.`,
-      materiais: [{ nome: equipamento.modelo, quantidade: 1, identificacao: equipamento.serie }],
+      materiais: [{ nome: equipamento.modelo, quantidade: dadosMovimentacao.quantidade || 1, identificacao: equipamento.serie }],
     };
 
     if (apiHabilitada) {

@@ -15,6 +15,9 @@ export function useFiltrosPainel({ obras, equipamentos, funcionarios }) {
       const correspondeABusca = !termoNormalizado || [
         equipamento.modelo,
         equipamento.serie,
+        equipamento.tipo,
+        equipamento.medida,
+        equipamento.observacoes,
         equipamento.tecnico,
       ].some((valor) => valor?.toLocaleLowerCase('pt-BR').includes(termoNormalizado));
 

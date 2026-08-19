@@ -1,13 +1,16 @@
 import { ArrowLeftRight, Download, FileText, MapPin, Wrench } from 'lucide-react';
 import { IndicadorStatus } from '../status-badge/StatusBadge';
-import { iconePorTipoEquipamento, statusEquipamento, tiposEquipamento } from '../../data/mockData';
+import { iconePorTipoEquipamento, statusEquipamento } from '../../data/mockData';
 
 const classePorTipo = { Fluke: 'tipoFluke', OTDR: 'tipoOtdr', Outro: 'tipoOutro' };
 
-export function TelaEquipamentos({ equipamentos, buscarObraPorId, tipoSelecionado, statusSelecionado, aoSelecionarTipo, aoSelecionarStatus, aoAbrirHistorico, aoImprimirHistorico, aoMover, estilos }) {
+export function TelaEquipamentos({ equipamentos, tiposDisponiveis, buscarObraPorId, tipoSelecionado, statusSelecionado, aoSelecionarTipo, aoSelecionarStatus, aoAbrirHistorico, aoImprimirHistorico, aoMover, estilos }) {
   return <>
     <div className={estilos.filters}>
-      {['Todos', ...tiposEquipamento].map((tipo) => <button key={tipo} onClick={() => aoSelecionarTipo(tipo)} className={`${estilos.filterChip} ${tipoSelecionado === tipo ? estilos.filterChipTipoActive : ''}`}>{tipo === 'Outro' ? 'Outros' : tipo}</button>)}
+      <select className={estilos.filterSelect} value={tipoSelecionado} onChange={(evento) => aoSelecionarTipo(evento.target.value)} aria-label="Filtrar por subcategoria">
+        <option value="Todos">Todas as subcategorias</option>
+        {tiposDisponiveis.map((tipo) => <option key={tipo} value={tipo}>{tipo === 'Outro' ? 'Outros' : tipo}</option>)}
+      </select>
       <span className={estilos.filterDivider} />
       {['Todos', ...statusEquipamento].map((status) => <button key={status} onClick={() => aoSelecionarStatus(status)} className={`${estilos.filterChip} ${statusSelecionado === status ? estilos.filterChipStatusActive : ''}`}>{status}</button>)}
     </div>
@@ -21,6 +24,7 @@ export function TelaEquipamentos({ equipamentos, buscarObraPorId, tipoSelecionad
           </div>
           <div className={estilos.equipFooter}><div className={estilos.equipLocation}><MapPin size={12} className={estilos.equipLocPin} /><span className={estilos.equipLocationText}>{obra ? obra.nome : 'Depósito central'}</span></div><button onClick={() => aoMover(equipamento)} className={estilos.moverBtn}><ArrowLeftRight size={11} /> Mover</button></div>
           {equipamento.tecnico && <div className={estilos.equipTecnico}>Com {equipamento.tecnico}</div>}
+          {(equipamento.medida || equipamento.quantidade > 1 || equipamento.observacoes) && <div className={estilos.equipTecnico}>{equipamento.tipo} · {equipamento.medida || 'Sem medida'} · {equipamento.quantidadeDisponivel ?? equipamento.quantidade ?? 1} disponíveis{equipamento.quantidadeReservada > 0 ? ` · ${equipamento.quantidadeReservada} reservadas` : ''}{equipamento.observacoes ? ` · ${equipamento.observacoes}` : ''}</div>}
         </div>;
       })}
       {equipamentos.length === 0 && <div className={estilos.emptyState}>Nenhum equipamento encontrado com esses filtros.</div>}

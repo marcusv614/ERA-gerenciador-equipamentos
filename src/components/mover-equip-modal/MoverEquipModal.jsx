@@ -10,6 +10,9 @@ export function ModalMovimentarEquipamento({ equipamento, obras, tecnicosCadastr
   const [status, definirStatus] = useState(equipamento.status);
   const [tecnico, definirTecnico] = useState(equipamento.tecnico || "");
   const [dataMovimentacao, definirDataMovimentacao] = useState(obterDataAtual());
+  const [quantidade, definirQuantidade] = useState(1);
+  const quantidadeDisponivel = equipamento.quantidadeDisponivel ?? equipamento.quantidade ?? 1;
+  const controlaLote = equipamento.controleQuantidade === 'LOTE' || quantidadeDisponivel > 1;
   const statusPermitidos = obraId
     ? statusEquipamento.filter((opcao) => ['Em campo', 'Em trânsito'].includes(opcao))
     : statusEquipamento.filter((opcao) => ['Em estoque', 'Em manutenção'].includes(opcao));
@@ -49,6 +52,18 @@ export function ModalMovimentarEquipamento({ equipamento, obras, tecnicosCadastr
           />
         </CampoFormulario>
 
+        {controlaLote && <CampoFormulario rotulo="Quantidade">
+          <input
+            type="number"
+            min="1"
+            max={quantidadeDisponivel}
+            className={styles.input}
+            value={quantidade}
+            onChange={(e) => definirQuantidade(Math.max(1, Math.min(quantidadeDisponivel, Number(e.target.value) || 1)))}
+          />
+          <small>{quantidadeDisponivel} unidades disponíveis</small>
+        </CampoFormulario>}
+
         <CampoFormulario rotulo="Status">
           <div className={styles.statusWrap}>
             {statusPermitidos.map((s) => (
@@ -79,13 +94,14 @@ export function ModalMovimentarEquipamento({ equipamento, obras, tecnicosCadastr
         <div className={styles.actions}>
           <button onClick={aoFechar} className={styles.cancel}>Cancelar</button>
           <button
-            disabled={!dataMovimentacao || (Boolean(obraId) && !tecnico.trim())}
+            disabled={!dataMovimentacao || quantidade < 1 || quantidade > quantidadeDisponivel || (Boolean(obraId) && !tecnico.trim())}
             onClick={() =>
               aoSalvar(equipamento.id, {
                 obraId: obraId || null,
                 status,
                 tecnico: tecnico || null,
                 dataMovimentacao,
+                quantidade,
               })
             }
             className={styles.submit}

@@ -25,7 +25,7 @@ function normalizarEquipamento(equipamento) {
 
   return {
     ...equipamento,
-    tipo: tipoEquipamentoParaInterface[tipoNormalizado] || 'Outro',
+    tipo: tipoEquipamentoParaInterface[tipoNormalizado] || tipoRecebido || 'Outro',
     status: statusEquipamentoParaInterface[statusNormalizado] || statusRecebido,
   };
 }

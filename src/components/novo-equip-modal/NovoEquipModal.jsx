@@ -2,9 +2,10 @@ import { useState } from "react";
 import { EstruturaModal } from "../modal-shell/ModalShell";
 import { CampoFormulario } from "../field/Field";
 import { tiposEquipamento, iconePorTipoEquipamento } from '../../data/mockData';
+import { Wrench } from 'lucide-react';
 import styles from "./NovoEquipModal.module.css";
 
-export function ModalNovoEquipamento({ obras, tecnicosCadastrados, seriesCadastradas, aoFechar, aoSalvar }) {
+export function ModalNovoEquipamento({ obras, tecnicosCadastrados, seriesCadastradas, tiposDisponiveis = tiposEquipamento, aoFechar, aoSalvar }) {
   const [form, setForm] = useState({
     tipo: "OTDR",
     modelo: "",
@@ -29,8 +30,8 @@ export function ModalNovoEquipamento({ obras, tecnicosCadastrados, seriesCadastr
       <div className={styles.form}>
         <CampoFormulario rotulo="Tipo">
           <div className={styles.typeRow}>
-            {tiposEquipamento.map((t) => {
-              const Icon = iconePorTipoEquipamento[t];
+            {tiposDisponiveis.map((t) => {
+              const Icon = iconePorTipoEquipamento[t] || Wrench;
               return (
                 <button
                   key={t}
