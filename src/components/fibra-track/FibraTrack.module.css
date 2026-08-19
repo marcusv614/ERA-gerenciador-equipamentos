@@ -579,6 +579,22 @@
   margin-bottom: 12px;
 }
 
+.apiFeedback {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.apiFeedbackErro {
+  border-color: rgba(209, 84, 84, 0.3);
+  background: rgba(209, 84, 84, 0.08);
+  color: #c44444;
+}
+
 button.equipCard {
   width: 100%;
   color: var(--text);

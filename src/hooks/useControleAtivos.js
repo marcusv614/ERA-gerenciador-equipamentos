@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   equipamentosIniciais,
   funcionariosIniciais,
@@ -7,12 +7,33 @@ import {
 } from '../data/mockData';
 import { obterDataAtual } from '../utils/datas';
 import { obterHistoricoEquipamento } from '../utils/historicoEquipamento';
+import { apiHabilitada } from '../services/api/clienteHttp';
+import { apiAtividades, apiEquipamentos, apiFuncionarios, apiObras, carregarDadosIniciaisApi } from '../services/api/servicoAtivosApi';
 
 export function useControleAtivos() {
   const [obras, definirObras] = useState(obrasIniciais);
   const [equipamentos, definirEquipamentos] = useState(equipamentosIniciais);
   const [funcionarios, definirFuncionarios] = useState(funcionariosIniciais);
   const [solicitacoes, definirSolicitacoes] = useState(solicitacoesIniciais);
+  const [carregandoDados, definirCarregandoDados] = useState(apiHabilitada);
+  const [erroApi, definirErroApi] = useState(null);
+
+  useEffect(() => {
+    if (!apiHabilitada) return undefined;
+    let deveAtualizar = true;
+    carregarDadosIniciaisApi()
+      .then((dados) => {
+        if (!deveAtualizar) return;
+        if (Array.isArray(dados.obras)) definirObras(dados.obras);
+        if (Array.isArray(dados.equipamentos)) definirEquipamentos(dados.equipamentos);
+        if (Array.isArray(dados.funcionarios)) definirFuncionarios(dados.funcionarios);
+        if (Array.isArray(dados.solicitacoes)) definirSolicitacoes(dados.solicitacoes);
+        definirErroApi(null);
+      })
+      .catch((erro) => { if (deveAtualizar) definirErroApi(erro.message); })
+      .finally(() => { if (deveAtualizar) definirCarregandoDados(false); });
+    return () => { deveAtualizar = false; };
+  }, []);
 
   const buscarObraPorId = (identificador) =>
     obras.find((obra) => obra.id === identificador);
@@ -31,18 +52,42 @@ export function useControleAtivos() {
     .sort((primeiroNome, segundoNome) => primeiroNome.localeCompare(segundoNome, 'pt-BR')),
   [funcionarios]);
 
-  function cadastrarObra(dadosNovaObra) {
+  async function cadastrarObra(dadosNovaObra) {
+    if (apiHabilitada) {
+      try {
+        const obraCadastrada = await apiObras.cadastrar(dadosNovaObra);
+        definirObras((obrasAtuais) => [obraCadastrada, ...obrasAtuais]);
+        definirErroApi(null);
+        return true;
+      } catch (erro) {
+        definirErroApi(erro.message);
+        return false;
+      }
+    }
     definirObras((obrasAtuais) => [
       { id: `o${obrasAtuais.length + 1}_${Date.now()}`, ...dadosNovaObra },
       ...obrasAtuais,
     ]);
+    return true;
   }
 
-  function cadastrarEquipamento(dadosNovoEquipamento) {
+  async function cadastrarEquipamento(dadosNovoEquipamento) {
     const serieNormalizada = dadosNovoEquipamento.serie.trim().toLocaleLowerCase('pt-BR');
     const serieJaExiste = equipamentos.some(({ serie }) =>
       serie.trim().toLocaleLowerCase('pt-BR') === serieNormalizada);
     if (serieJaExiste) return false;
+
+    if (apiHabilitada) {
+      try {
+        const equipamentoCadastrado = await apiEquipamentos.cadastrar(dadosNovoEquipamento);
+        definirEquipamentos((equipamentosAtuais) => [equipamentoCadastrado, ...equipamentosAtuais]);
+        definirErroApi(null);
+        return true;
+      } catch (erro) {
+        definirErroApi(erro.message);
+        return false;
+      }
+    }
 
     const dataCadastro = dadosNovoEquipamento.data || obterDataAtual();
     definirEquipamentos((equipamentosAtuais) => [
@@ -57,13 +102,25 @@ export function useControleAtivos() {
     return true;
   }
 
-  function cadastrarFuncionario(dadosNovoFuncionario) {
+  async function cadastrarFuncionario(dadosNovoFuncionario) {
     const emailNormalizado = dadosNovoFuncionario.email.trim().toLocaleLowerCase('pt-BR');
     const nomeNormalizado = dadosNovoFuncionario.nome.trim().toLocaleLowerCase('pt-BR');
     const funcionarioJaExiste = funcionarios.some(({ email, nome }) =>
       email.trim().toLocaleLowerCase('pt-BR') === emailNormalizado ||
       nome.trim().toLocaleLowerCase('pt-BR') === nomeNormalizado);
     if (funcionarioJaExiste) return false;
+
+    if (apiHabilitada) {
+      try {
+        const funcionarioCadastrado = await apiFuncionarios.cadastrar(dadosNovoFuncionario);
+        definirFuncionarios((funcionariosAtuais) => [funcionarioCadastrado, ...funcionariosAtuais]);
+        definirErroApi(null);
+        return true;
+      } catch (erro) {
+        definirErroApi(erro.message);
+        return false;
+      }
+    }
 
     definirFuncionarios((funcionariosAtuais) => [{
       id: `f${funcionariosAtuais.length + 1}_${Date.now()}`,
@@ -73,7 +130,16 @@ export function useControleAtivos() {
     return true;
   }
 
-  function movimentarEquipamento(identificador, dadosMovimentacao) {
+  async function movimentarEquipamento(identificador, dadosMovimentacao) {
+    if (apiHabilitada) {
+      try {
+        await apiEquipamentos.movimentar(identificador, dadosMovimentacao);
+        definirErroApi(null);
+      } catch (erro) {
+        definirErroApi(erro.message);
+        return false;
+      }
+    }
     definirEquipamentos((equipamentosAtuais) =>
       equipamentosAtuais.map((equipamento) => {
         if (equipamento.id !== identificador) return equipamento;
@@ -120,6 +186,7 @@ export function useControleAtivos() {
         };
       }),
     );
+    return true;
   }
 
   function consultarHistorico(equipamento) {
@@ -184,7 +251,17 @@ export function useControleAtivos() {
     }));
   }
 
-  function definirStatusSolicitacao(identificador, status) {
+  async function definirStatusSolicitacao(identificador, status) {
+    if (apiHabilitada) {
+      try {
+        if (status === 'Aprovada') await apiAtividades.aprovar(identificador);
+        if (status === 'Rejeitada') await apiAtividades.rejeitar(identificador);
+        definirErroApi(null);
+      } catch (erro) {
+        definirErroApi(erro.message);
+        return false;
+      }
+    }
     const solicitacaoAtual = solicitacoes.find((solicitacao) => solicitacao.id === identificador);
     if (status === 'Aprovada' && solicitacaoAtual?.status !== 'Aprovada') {
       sincronizarMovimentacaoAprovada({ ...solicitacaoAtual, status });
@@ -193,9 +270,19 @@ export function useControleAtivos() {
       solicitacao.id === identificador
         ? { ...solicitacao, status, dataDecisao: obterDataAtual() }
         : solicitacao));
+    return true;
   }
 
-  function editarSolicitacao(identificador, dadosAtualizados) {
+  async function editarSolicitacao(identificador, dadosAtualizados) {
+    if (apiHabilitada) {
+      try {
+        await apiAtividades.atualizar(identificador, dadosAtualizados);
+        definirErroApi(null);
+      } catch (erro) {
+        definirErroApi(erro.message);
+        return false;
+      }
+    }
     const solicitacaoAnterior = solicitacoes.find((solicitacao) => solicitacao.id === identificador);
     const solicitacaoAtualizada = solicitacaoAnterior ? { ...solicitacaoAnterior, ...dadosAtualizados } : null;
     if (solicitacaoAtualizada?.status === 'Aprovada') {
@@ -205,6 +292,7 @@ export function useControleAtivos() {
       solicitacao.id === identificador
         ? { ...solicitacao, ...dadosAtualizados }
         : solicitacao));
+    return true;
   }
 
   return {
@@ -212,6 +300,9 @@ export function useControleAtivos() {
     equipamentos,
     funcionarios,
     solicitacoes,
+    apiHabilitada,
+    carregandoDados,
+    erroApi,
     resumoEquipamentos,
     tecnicosCadastrados,
     buscarObraPorId,

@@ -34,13 +34,17 @@ export function PainelControleAtivos() {
   const [solicitacaoEmEdicao, definirSolicitacaoEmEdicao] = useState(null);
 
   const imprimirHistoricoDoEquipamento = (equipamento) => imprimirHistoricoEquipamento(equipamento, controleAtivos.consultarHistorico(equipamento), controleAtivos.buscarObraPorId);
-  const cadastrarObra = (novaObra) => { controleAtivos.cadastrarObra(novaObra); definirModalNovaObraAberto(false); };
-  const cadastrarEquipamento = (novoEquipamento) => {
-    if (controleAtivos.cadastrarEquipamento(novoEquipamento)) definirModalNovoEquipamentoAberto(false);
+  const cadastrarObra = async (novaObra) => {
+    if (await controleAtivos.cadastrarObra(novaObra)) definirModalNovaObraAberto(false);
   };
-  const movimentarEquipamento = (identificador, movimentacao) => { controleAtivos.movimentarEquipamento(identificador, movimentacao); definirEquipamentoParaMover(null); };
-  const cadastrarFuncionario = (novoFuncionario) => {
-    if (controleAtivos.cadastrarFuncionario(novoFuncionario)) definirModalNovoFuncionarioAberto(false);
+  const cadastrarEquipamento = async (novoEquipamento) => {
+    if (await controleAtivos.cadastrarEquipamento(novoEquipamento)) definirModalNovoEquipamentoAberto(false);
+  };
+  const movimentarEquipamento = async (identificador, movimentacao) => {
+    if (await controleAtivos.movimentarEquipamento(identificador, movimentacao)) definirEquipamentoParaMover(null);
+  };
+  const cadastrarFuncionario = async (novoFuncionario) => {
+    if (await controleAtivos.cadastrarFuncionario(novoFuncionario)) definirModalNovoFuncionarioAberto(false);
   };
   const selecionarTela = (tela) => {
     definirTelaAtual(tela);
@@ -54,9 +58,8 @@ export function PainelControleAtivos() {
     selecionarTela('equipamentos');
     filtros.definirTipoSelecionado(tipo);
   };
-  const salvarEdicaoSolicitacao = (identificador, dadosAtualizados) => {
-    controleAtivos.editarSolicitacao(identificador, dadosAtualizados);
-    definirSolicitacaoEmEdicao(null);
+  const salvarEdicaoSolicitacao = async (identificador, dadosAtualizados) => {
+    if (await controleAtivos.editarSolicitacao(identificador, dadosAtualizados)) definirSolicitacaoEmEdicao(null);
   };
   const totalAtividadesPendentes = controleAtivos.solicitacoes.filter(({ status }) => status === 'Pendente').length;
   const termoAtividades = filtros.termoBusca.trim().toLocaleLowerCase('pt-BR');
@@ -77,6 +80,8 @@ export function PainelControleAtivos() {
     <main className={estilos.main}>
       <BarraSuperior telaAtual={telaAtual} recolhida={barraSuperiorRecolhida} modoEscuro={modoEscuro} termoBusca={filtros.termoBusca} aoAlternarRecolhimento={() => definirBarraSuperiorRecolhida((recolhida) => !recolhida)} aoAlternarTema={() => definirModoEscuro((escuro) => !escuro)} aoBuscar={filtros.definirTermoBusca} aoAbrirNovoEquipamento={() => definirModalNovoEquipamentoAberto(true)} aoAbrirNovaObra={() => definirModalNovaObraAberto(true)} aoAbrirNovoFuncionario={() => definirModalNovoFuncionarioAberto(true)} estilos={estilos} />
       <div className={estilos.content}>
+        {controleAtivos.carregandoDados && <div className={estilos.apiFeedback}>Sincronizando dados com a API...</div>}
+        {controleAtivos.erroApi && <div className={`${estilos.apiFeedback} ${estilos.apiFeedbackErro}`} role="alert">Falha na comunicação com a API: {controleAtivos.erroApi}</div>}
         {telaAtual !== 'atividades' && <ResumoEquipamentos resumo={controleAtivos.resumoEquipamentos} estilos={estilos} />}
         {telaAtual === 'equipamentos' && <TelaEquipamentos equipamentos={filtros.equipamentosFiltrados} buscarObraPorId={controleAtivos.buscarObraPorId} tipoSelecionado={filtros.tipoSelecionado} statusSelecionado={filtros.statusSelecionado} aoSelecionarTipo={filtros.definirTipoSelecionado} aoSelecionarStatus={filtros.definirStatusSelecionado} aoAbrirHistorico={definirEquipamentoComHistoricoAberto} aoImprimirHistorico={imprimirHistoricoDoEquipamento} aoMover={definirEquipamentoParaMover} estilos={estilos} />}
         {telaAtual === 'obras' && <TelaObras obras={filtros.obrasFiltradas} equipamentos={controleAtivos.equipamentos} aoMoverEquipamento={definirEquipamentoParaMover} aoImprimirCautela={(obra) => imprimirCautelaObra(obra, controleAtivos.equipamentos)} aoImprimirHistorico={(obra) => imprimirHistoricoObra(obra, controleAtivos.equipamentos)} estilos={estilos} />}
